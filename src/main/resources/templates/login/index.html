@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+	<head>
+    	<meta charset="UTF-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+    	<!-- Bootstrap -->
+    	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" 
+          	integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+    	<!-- Google Fonts -->
+    	<link rel="preconnect" href="https://fonts.googleapis.com">
+    	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
+
+    	<!-- Font Awesome for icons -->
+    	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    	<!-- CSSファイル -->
+    	<link th:href="@{/css/style.css}" rel="stylesheet">
+
+    	<title>ログイン</title>
+	</head>
+	<body>
+		<div class="edelweiss-wrapper">
+ 			<header>
+				<nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm edelweiss-navbar">
+					<div class="container edelweiss-container">
+					 	<div class="navbar-brand">
+							Edelweis
+						</div>
+                     	<ul class="navbar-nav ms-auto">
+                         	<li class="nav-item">
+                             	<a th:href="@{/logout}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                 	ログアウト
+                             	</a>
+                             	<form id="logout-form" class="d-none" th:action="@{/logout}" method="post"></form>
+                         	</li>
+                     	</ul>
+                 	</div>
+             	</nav>
+         	</header>	
+            <!-- Login Form -->
+            <main>
+				<div class="container pt-4 pb-5 edelweiss-container">
+                   <div class="row justify-content-center">
+                       <div class="col-xl-3 col-lg-4 col-md-5 col-sm-7">
+                           <h1 class="mb-4 text-center">ログイン</h1>           	
+                			<!-- Error Message -->
+                				<div th:if="${param.error}" class="alert alert-danger">
+                    				ユーザー名またはパスワードが正しくありません
+                				</div>
+							<form th:action="@{/login}" method="post">
+                				<!-- Email Input -->
+                				<div class="form-group mb-3">
+                    				<label for="username" class="form-label">メールアドレス</label>
+                    				<input type="email" class="form-control" id="username" name="username" placeholder="email@example.com">
+                				</div>
+
+                				<!-- Password Input -->
+                				<div class="form-group mb-3">
+                    				<label for="password" class="form-label">パスワード</label>
+                    				<input type="password" class="form-control" id="password" name="password" placeholder="パスワードを入力">
+                				</div>
+
+                				<!-- Remember Me & Forgot Password -->
+                				<div class="d-flex justify-content-between mb-4">
+                    				<div class="form-check">
+                        				<input type="checkbox" class="form-check-input" id="rememberMe" name="remember-me">
+                        				<label class="form-check-label" for="rememberMe">
+                            				ログイン状態を保持
+                        				</label>
+                    				</div>
+                    				<a href="#" class="forgot-password">パスワードを忘れた方</a>
+                				</div>
+
+                				<!-- Login Button -->
+                				<button type="submit" class="btn btn-primary w-100 mb-3">
+                    				ログイン
+                				</button>
+
+                				<!-- Social Login Divider -->
+                				<div class="divider">
+                    				<span>または</span>
+                				</div>
+
+                				<!-- Social Login Buttons -->
+                				<div class="social-login">
+                    				<button type="button" class="btn btn-social btn-google" onclick="">
+                        				<i class="fab fa-google"></i>
+                        				Googleでログイン
+                    				</button>
+                    
+                    				<button type="button" class="btn btn-social btn-line" onclick="">
+                        				<i class="fab fa-line"></i>
+                        				LINEでログイン
+                    				</button>
+                    
+                    				<button type="button" class="btn btn-social btn-facebook" onclick="">
+                        				<i class="fab fa-facebook-f"></i>
+                        				Facebookでログイン
+                    				</button>
+                				</div>
+
+                				<!-- Sign Up Link -->
+                				<div class="signup-link">
+                    				アカウントをお持ちでない方は
+                    				<a th:href="@{/signup}">新規登録</a>
+                				</div>
+            				</form>
+            			</div>
+        			</div>
+        		</div>
+    		</main>
+ 			<footer>
+				<div class="d-flex justify-content-center align-items-center h-100">
+					<p class="text-center text-muted small mb-0">&copy; Edelweiss All rights reserved.</p>
+ 				</div>
+			</footer>
+		</div>
+
+    	<!-- Bootstrap JS -->
+    	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	</body>
+</html>     
