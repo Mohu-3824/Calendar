@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head>
+    	<div th:replace="~{fragment :: meta}"></div>
+		<div th:replace="~{fragment :: styles}"></div>
+
+    	<title>本日のタスク</title>
+	</head>
+	<body>
+		<div class="edelweiss-wrapper">
+		<div th:replace="~{fragment :: header}"></div>
+		<main>
+			<div class="container pt-4 pb-5 edelweiss-container">
+				<div class="page" th:data-date="${date}">
+					<!-- ナビゲーション（前日・翌日） -->
+					<div class="date-nav">
+						<a class="nav" th:href="@{/tasks/day(date=${#temporals.format(#temporals.parseISO(date).minusDays(1))})}">&lt;</a>
+						<input class="date-input" type="date" th:value="${date}" id="datePicker"/>
+						<a class="nav" th:href="@{/tasks/day(date=${#temporals.format(#temporals.parseISO(date).plusDays(1))})}">&gt;</a>
+					</div>
+						
+					<h2 class="title">本日のタスク</h2>
+					
+					  <!-- タスクリスト -->
+					  <div class="task-list">
+						  <div th:each="task : ${tasks}" class="task-item">
+							  <input type="checkbox" th:checked="${task.done}" th:value="${task.id}" th:onchange="toggleTaskCompletion(task.id, this.checked)" />
+							  <span th:text="${task.title}"></span>
+							  <span th:text="${task.categoryCode}"></span>
+							  <!-- 削除フォームに日付も持たせる -->
+							  <form th:action="@{/tasks/delete}" method="post" style="display:inline;">
+								  <input type="hidden" th:value="${task.id}" name="taskId"/>
+								  <input type="hidden" th:value="${date}" name="date"/>
+								  <button type="submit">削除</button>
+							  </form>
+						  </div>
+					  </div>
+					  
+					  <!-- タスク追加ボタン -->
+					  <a href="/tasks/new" class="add-task-btn">タスクを追加</a>
+				  </div>
+				  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+				  
+				</div>
+			</div>
+		</main>
+        <div th:replace="~{fragment :: footer}"></div>
+        </div>
+        <div th:replace="~{fragment :: scripts}"></div>
+	</body>
+</html>   

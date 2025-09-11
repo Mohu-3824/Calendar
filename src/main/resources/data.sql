@@ -5,3 +5,9 @@ INSERT IGNORE INTO users (id, name, furigana, phone_number, email, password, ena
 (3, '伊藤　英二', 'イトウ　エイジ','090-1234-5678', 'eiji.ito@example.com', '$2a$10$2JNjTwZBwo7fprL2X4sv.OEKqxnVtsVQvuXDkI8xVGix.U3W5B7CO', true),
 (4, '佐藤　信子', 'サトウ　ノブコ','090-1234-5678', 'nobuko.sato@example.com', '$2a$10$2JNjTwZBwo7fprL2X4sv.OEKqxnVtsVQvuXDkI8xVGix.U3W5B7CO', true),
 (5, '木下　純一', 'キノシタ　ジュンイチ','090-1234-5678', 'junichi.kinoshita@example.com', '$2a$10$2JNjTwZBwo7fprL2X4sv.OEKqxnVtsVQvuXDkI8xVGix.U3W5B7CO', true);
+
+/* tasksテーブル */
+INSERT IGNORE INTO tasks (id, mydate, title, category_code, done, current_streak, max_streak) VALUES 
+(1, '2025-09-10', '読書', 'hobby', false, 5, 15),
+(2, '2025-09-10', '勉強', 'study', true, 3, 12),
+(3, '2025-09-10', '筋トレ', 'beauty', true, 3, 14);
