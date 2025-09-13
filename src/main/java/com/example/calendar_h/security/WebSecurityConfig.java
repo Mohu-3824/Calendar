@@ -20,7 +20,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/css/**", "/img/**", "/js/**", "/storage/**", "/","/calendar", "/calendar/tasks/**").permitAll()  // すべてのユーザーにアクセスを許可するURL
+                .requestMatchers("/css/**", "/img/**", "/js/**", "/storage/**", "/","/calendar", "/tasks/**").permitAll()  // すべてのユーザーにアクセスを許可するURL
                 .anyRequest().authenticated()                   // 上記以外のURLはログインが必要（会員または管理者のどちらでもOK）
             )
             .formLogin((form) -> form

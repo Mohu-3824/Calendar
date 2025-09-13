@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,31 +26,40 @@ private final TaskService taskService;
 private static final DateTimeFormatter DF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 /** 日次タスク表示 */
-@GetMapping("/day")
-public String task(@RequestParam(required = false) String date, Model model) {
-    LocalDate targetDate;
-    if (date == null || date.isBlank()) {
-        targetDate = LocalDate.now();
-    } else {
-        targetDate = LocalDate.parse(date, DF);
-    }
+@GetMapping({"/{date}", "", "/"})
+public String task(@PathVariable(required = false) String date, Model model) {
+    LocalDate targetDate = (date == null || date.isBlank())
+            ? LocalDate.now()
+            : LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+    model.addAttribute("date", targetDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))); // 表示用
+    model.addAttribute("dateObj", targetDate); // LocalDate型
+
     List<Task> tasks = taskService.getTasksByDate(targetDate);
-    model.addAttribute("tasks", tasks);
-    model.addAttribute("date", targetDate.format(DF));
+    model.addAttribute("incompleteTasks", tasks.stream().filter(t -> !t.isDone()).toList());
+    model.addAttribute("completedTasks", tasks.stream().filter(Task::isDone).toList());
+
     return "daytask/index";
 }
 
+
 /** 完了トグル */
 @PostMapping("/toggle")
-public String toggleTaskCompletion(@RequestParam int taskId, @RequestParam boolean done,@RequestParam String date) {
+public String toggleTaskCompletion(
+        @RequestParam int taskId,
+        @RequestParam boolean done,
+        @RequestParam String date
+) {
     taskService.toggleTaskCompletion(taskId, done);
-    return "redirect:/tasks/day?date=" + date; // 今日の日付でリダイレクト
+    return "redirect:/tasks/" + date;
 }
-
 /** タスク削除 */
 @PostMapping("/delete")
-public String deleteTask(@RequestParam int taskId,@RequestParam String date) {
+public String deleteTask(
+		@RequestParam int taskId,
+		@RequestParam String date
+) {
     taskService.deleteTask(taskId);
-    return "redirect:/tasks/day?date=" + date; // 今日の日付でリダイレクト
+    return "redirect:/tasks/" + date; // 今日の日付でリダイレクト
 }
 }

@@ -338,6 +338,111 @@ footer {
 	border-radius:8px;
 }
 
+.cat-study { 
+	background-color: #ff99ff; 
+	padding: 2px 6px; 
+	border-radius: 4px; 
+}
+
+.cat-hobby { 
+	background-color: #66ff66; 
+	padding: 2px 6px; 
+	border-radius: 4px; 
+}
+
+.cat-beauty { 
+	background-color: #ffff66; 
+	padding: 2px 6px; 
+	border-radius: 4px; 
+}
+
+.streak { 
+	font-size: 0.8em; 
+	color: red; 
+	margin-left: 8px; 
+}
+
+/* カテゴリ色 */
+.cat-study { 
+	background-color: #f0d9ff; 
+}
+
+.cat-hobby { 
+	background-color: #d1f7c4; 
+}
+
+.cat-beauty { 
+	background-color: #ffe6a7; 
+}
+.category-label {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 5px;
+	margin-left: 8px;
+	font-size: 0.85rem;
+}
+
+/* タスク行 */
+.task-item {
+	display: flex;
+	align-items: center;
+ 	justify-content: space-between;
+	padding: 6px 0;
+ 	border-bottom: 1px solid #eee;
+}
+
+.task-content {
+	display: flex;
+	align-items: center;
+	}
+	
+.task-title {
+	font-weight: 500;
+	margin-left: 8px;
+}
+
+.streak-text {
+	font-size: 0.8rem;
+	color: #ff4d4d;
+	margin-left: 10px;
+}
+        
+/* ボタン */
+.btn-edit, .btn-delete {
+	font-size: 0.8rem;
+	padding: 2px 6px;
+}
+        
+/* 日付ナビ */
+.date-nav {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 15px;
+}
+        
+.date-input {
+	margin: 0 10px;
+}
+        
+/* 固定の追加ボタン */
+.floating-add-btn {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	width: 50px;
+	height: 50px;
+	background-color: #0080ff;
+	color: white;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 2rem;
+	text-decoration: none;
+	box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
 @media screen and (min-width: 1400px) {
  .samuraitravel-container {
    max-width: 1200px;

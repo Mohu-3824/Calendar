@@ -19,12 +19,17 @@ $(function() {
     for (let i=0; i<35; i++) {
       const d = new Date(start);
       d.setDate(start.getDate() + i);
-
-      const ymd = d.toISOString().split("T")[0];
+      
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const ymd = `${y}-${m}-${day}`;
+      
       const isOtherMonth = d.getMonth() !== month;
       const isToday = ymd === today;
 
-      const $cell = $(`<div class="day-cell">${d.getDate()}</div>`);
+      const $cell = $(`<div class="day-cell">${d.getDate()}</div>`)
+      .attr("data-date", ymd); 
       if (isOtherMonth) $cell.css("color","#bbb");
       if (isToday) $cell.addClass("today");
 
@@ -44,6 +49,6 @@ $(function() {
   // 日付セルクリックで日別画面へ
 $(document).on("click", ".day-cell", function(){
   const date = $(this).data("date"); // "yyyy-MM-dd"
-  if (date) window.location.href = `/calendar/day?date=${date}`;
+  if (date) window.location.href = `/tasks/${date}`; 
   })
 });
