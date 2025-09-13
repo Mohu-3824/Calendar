@@ -50,5 +50,57 @@ $(function() {
 $(document).on("click", ".day-cell", function(){
   const date = $(this).data("date"); // "yyyy-MM-dd"
   if (date) window.location.href = `/tasks/${date}`; 
-  })
+  });
+  
+ // 🔹 ホバーで開くドロップダウン制御
+  $('.dropdown').hover(
+    function(){
+      // マウスがのった時
+      $(this).find('.dropdown-menu').addClass('show');
+      $(this).find('[data-bs-toggle="dropdown"]').attr('aria-expanded', true);
+    },
+    function(){
+      // マウスが離れた時
+      $(this).find('.dropdown-menu').removeClass('show');
+      $(this).find('[data-bs-toggle="dropdown"]').attr('aria-expanded', false);
+    }
+  );
+  
+  	window.location.href = `/tasks/edit/${taskId}?date=${date}`;
+      const selected = document.getElementById('selectedCategory').value;
+    if (selected) {
+        document.querySelectorAll('.category-item').forEach(item => {
+            if (item.dataset.code === selected) {
+                item.classList.add('selected');
+            }
+        });
+    }
+    
+    window.addEventListener('DOMContentLoaded', () => {
+    const repeatType = /*[[${task.repeatType}]]*/ 'none';
+    const repeatFrequency = /*[[${task.repeatFrequency}]]*/ '';
+    const repeatWeekdays = /*[[${task.repeatWeekdays}]]*/ '';
+    const repeatMonthDay = /*[[${task.repeatMonthDay}]]*/ '';
+
+    // 繰り返し表示切替
+    if (repeatType === 'repeat') {
+        document.getElementById('repeatOptions').style.display = 'block';
+    }
+
+    // 頻度選択
+    document.querySelector('select[name="repeatFrequency"]').value = repeatFrequency;
+
+    if (repeatFrequency === 'weekly') {
+        document.getElementById('weeklyOption').style.display = 'block';
+        repeatWeekdays.split(',').forEach(day => {
+            const checkbox = document.querySelector(`input[name="weekday"][value="${day}"]`);
+            if (checkbox) checkbox.checked = true;
+        });
+    }
+
+    if (repeatFrequency === 'monthly') {
+        document.getElementById('monthlyOption').style.display = 'block';
+        document.querySelector('input[name="monthDay"]').value = repeatMonthDay || '';
+    }
+});
 });

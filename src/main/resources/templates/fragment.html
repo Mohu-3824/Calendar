@@ -54,13 +54,12 @@
 								<a id="navbarDropdownGeneral" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
 									<span sec:authentication="principal.user.name"></span>
 								</a>
+								
 								<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownGeneral">
 									<a class="dropdown-item edelweiss-dropdown-item" href="#">カテゴリー登録</a>
 									<a class="dropdown-item edelweiss-dropdown-item" href="#">会員情報</a>
 									<a class="dropdown-item edelweiss-dropdown-item" th:href="@{/calendar}">カレンダー</a>
-
 									<div class="dropdown-divider"></div>
-
 									<a class="dropdown-item edelweiss-dropdown-item" th:href="@{/logout}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
 									ログアウト
 									</a>

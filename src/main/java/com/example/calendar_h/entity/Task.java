@@ -36,4 +36,16 @@ public class Task {
 	
 	@Column(name = "max_streak")
 	private int maxStreak;        // 累計最長（例：15日）
+	
+    @Column(name = "repeat_type", length = 10)
+    private String repeatType; // none / repeat
+
+    @Column(name = "repeat_frequency", length = 10)
+    private String repeatFrequency; // daily / weekly / monthly
+
+    @Column(name = "repeat_weekdays", length = 50)
+    private String repeatWeekdays; // "Mon,Wed,Fri"
+
+    @Column(name = "repeat_month_day")
+    private Integer repeatMonthDay; // 1〜31
 }

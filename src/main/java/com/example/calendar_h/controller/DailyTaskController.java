@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,67 @@ public String task(@PathVariable(required = false) String date, Model model) {
     return "daytask/index";
 }
 
+/** 新規タスクフォーム表示 */
+@GetMapping("/new")
+public String newTaskForm(@RequestParam(required = false) String date, Model model) {
+    LocalDate selectedDate = (date == null || date.isBlank())
+            ? LocalDate.now()
+            : LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+
+    model.addAttribute("selectedDate", selectedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))); // 表示用
+    model.addAttribute("recentTasks", taskService.getRecentTasks(5));
+    model.addAttribute("task", new Task());
+    model.addAttribute("editMode", false);
+    model.addAttribute("weekdays", List.of("Sun","Mon","Tue","Wed","Thu","Fri","Sat"));
+
+    return "daytask/newtask"; // newtask.html
+}
+
+/** 新規タスク保存 */
+@PostMapping("/new")
+public String createTask(@ModelAttribute Task task,
+                         @RequestParam String mydate) {
+    task.setMydate(LocalDate.parse(mydate, DF));
+    // 初期ステータス（達成状態やストリーク数）
+    task.setDone(false);
+    task.setCurrentStreak(0);
+    task.setMaxStreak(0);
+
+    taskService.createTask(task);
+
+    return "redirect:/tasks/" + mydate;
+}
+
+/** 編集フォーム表示 */
+@GetMapping("/edit/{taskId}")
+public String editTaskForm(@PathVariable int taskId,
+                           @RequestParam(required = false) String date,
+                           Model model) {
+    LocalDate selectedDate = (date == null || date.isBlank())
+            ? LocalDate.now()
+            : LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+    Task existingTask = taskService.getTaskById(taskId)
+                        .orElseThrow(() -> new RuntimeException("タスクが見つかりません。"));
+
+    model.addAttribute("selectedDate", selectedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+    model.addAttribute("recentTasks", taskService.getRecentTasks(5));
+    model.addAttribute("task", existingTask);
+    model.addAttribute("editMode", true);
+    model.addAttribute("weekdays", List.of("Sun","Mon","Tue","Wed","Thu","Fri","Sat"));
+
+    return "daytask/newtask"; // 同じ画面を使う
+}
+
+/** タスク更新 */
+@PostMapping("/update")
+public String updateTask(@ModelAttribute Task task,
+                         @RequestParam String mydate) {
+    task.setMydate(LocalDate.parse(mydate, DF));
+    taskService.updateTask(task);
+    return "redirect:/tasks/" + mydate;
+}
 
 /** 完了トグル */
 @PostMapping("/toggle")

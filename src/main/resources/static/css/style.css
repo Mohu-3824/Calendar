@@ -298,15 +298,20 @@ footer {
 
 .fab-btn { 
 	position:fixed; 
-	right:30px; 
-	bottom:30px; 
-	width:60px; 
-	height:60px;
-  	border-radius:50%; 
-  	background:#2196f3; 
+	right:20px; 
+	bottom:90px; 
+	width:50px; 
+	height:50px;
+	border-radius: 50%;
+    background-color: #0080ff; 
   	color:#fff; 
   	border:none; 
-  	font-size:22px; 
+  	font-size:2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2); 
 }
 
 /* daytask page */
@@ -427,20 +432,89 @@ footer {
         
 /* 固定の追加ボタン */
 .floating-add-btn {
-	position: fixed;
-	bottom: 20px;
-	right: 20px;
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: #0080ff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+/* タスク新規作成 */
+/* 上部直近タスク表示 */
+.recent-task-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.recent-task {
+	border-radius: 4px;
+	padding: 6px 10px;
+	font-size: 0.85rem;
+	color: #fff;
+	display: inline-block;
+}
+
+.cat-hobby { 
+	background-color: #4CAF50; 
+}
+
+.cat-study { 
+	background-color: #f06292; 
+}
+
+.cat-exercise { 
+	background-color: #fbc02d; 
+}
+
+/* カテゴリー選択ボタン */
+.category-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 15px;
+	margin-top: 10px;
+}
+
+.category-item {
+	border: 2px solid #ccc;
+	border-radius: 8px;
+	padding: 50px;
+	text-align: center;
+	cursor: pointer;
+	transition: border 0.3s, background-color 0.3s;
+}
+
+.category-item.selected {
+	border-color: #007bff;
+	background-color: #eaf5ff;
+}
+
+.category-item img {
 	width: 50px;
 	height: 50px;
-	background-color: #0080ff;
+}
+
+.category-name {
+	padding: 5px;
+}
+
+.save-btn {
+	background-color: orange;
+	border: none;
+	padding: 10px 20px;
+	width: 100%;
+	font-weight: bold;
+	border-radius: 6px;
 	color: white;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 2rem;
-	text-decoration: none;
-	box-shadow: 0 4px 6px rgba(0,0,0,0.2);
 }
 
 @media screen and (min-width: 1400px) {

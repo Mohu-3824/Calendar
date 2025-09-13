@@ -14,9 +14,13 @@ CREATE TABLE IF NOT EXISTS tasks (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     mydate DATE NOT NULL,
     title VARCHAR(255) NOT NULL,
-    category_code VARCHAR(50) NOT NULL,  -- カテゴリコードを文字列として保存
+    category_code VARCHAR(50) NOT NULL,
     done BOOLEAN NOT NULL,
     current_streak INT NOT NULL,
-    max_streak INT NOT NULL
+    max_streak INT NOT NULL,
+    repeat_type VARCHAR(10) DEFAULT 'none',
+    repeat_frequency VARCHAR(10) DEFAULT NULL,
+    repeat_weekdays VARCHAR(50) DEFAULT NULL,
+    repeat_month_day INT DEFAULT NULL
 );
 	

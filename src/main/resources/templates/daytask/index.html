@@ -17,7 +17,7 @@
 					<input class="date-input" type="date" th:value="${date}" id="datePicker"/>
 					<a class="nav" th:href="@{/tasks/{d}(d=${#temporals.format(dateObj.plusDays(1), 'yyyy-MM-dd')})}">&gt;</a>
 					
-					<h2 class="title">本日のタスク</h2>
+					<h3 class="title">本日のタスク</h3>
 					
 					<!-- ☆ 未達成 -->
 					<h5 class="mt-4">☆未達成</h5>
