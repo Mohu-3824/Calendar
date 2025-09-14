@@ -14,8 +14,8 @@
         <h6>直近のタスク</h6>
         <div class="recent-task-list">
             <div th:each="t : ${recentTasks}"
-                 th:classappend="'recent-task cat-' + ${t.categoryCode}">
-                <span th:text="${t.title}"></span>
+                 th:classappend="'recent-task cat-' + ${t.task.categoryCode}">
+                <span th:text="${t.task.title}"></span>
                 <div class="small">
                     <span th:text="${t.currentStreak + '日連続達成中'}"></span><br>
                     <span th:text="${'累計' + t.maxStreak + '日達成'}"></span>
@@ -24,43 +24,48 @@
         </div>
 
          <!-- 共通フォーム -->
-        <form th:object="${task}"
-              th:action="@{${editMode} ? '/tasks/update' : '/tasks/new'}"
+        <form th:object="${log}"
+              th:action="@{${editMode} ? '/logs/update' : '/logs/new'}"
               method="post">
 
             <!-- ID（更新時のみ必要） -->
             <input type="hidden" th:if="${editMode}" th:field="*{id}"/>
+            <!-- TaskMaster ID -->
+            <input type="hidden" th:field="*{task.id}"/>
+            <!-- User ID -->
+            <input type="hidden" th:field="*{user.id}"/>
 
             <!-- 日付選択 -->
             <div class="d-flex align-items-center my-3">
                 <button type="button" class="btn btn-outline-secondary btn-sm me-2">&lt;</button>
-                <input type="date" name="mydate" class="form-control w-auto" th:value="${selectedDate}"/>
+                <input type="date" th:field="*{logDate}" class="form-control w-auto"/>
                 <button type="button" class="btn btn-outline-secondary btn-sm ms-2">&gt;</button>
             </div>
 
             <!-- タスク名 -->
             <div class="mb-3">
                 <label class="form-label">タスク</label>
-                <input type="text" th:field="*{title}" class="form-control" placeholder="タスク名を入力"/>
+                <input type="text" th:field="*{task.title}" class="form-control" placeholder="タスク名を入力"/>
             </div>
 
             <!-- 繰り返し設定 -->
             <div class="mb-3">
                 <label class="form-label">繰り返し</label><br>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="repeatType" value="none" checked>
+                    <input class="form-check-input" type="radio" th:field="*{task.repeatType}" value="none">
                     <label class="form-check-label">なし</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="repeatType" value="repeat">
+                    <input class="form-check-input" type="radio" th:field="*{task.repeatType}" value="repeat">
                     <label class="form-check-label">あり</label>
                 </div>
             </div>
 
             <!-- 繰り返し詳細 -->
-            <div id="repeatOptions" th:style="${task.repeatType == 'repeat'} ? '' : 'display:none;'">
+            <div id="repeatOptions" th:if="${log.task != null and log.task.repeatType == 'repeat'}">
                 <div class="mb-2">
-                    <select name="repeatFrequency" class="form-select w-auto" th:value="${task.repeatFrequency}">
+                    <select th:field="*{task.repeatFrequency}" class="form-select w-auto">
+                        <option value="" disabled>選択してください</option>
                         <option value="daily">毎日</option>
                         <option value="weekly">毎週</option>
                         <option value="monthly">毎月</option>
@@ -68,24 +73,26 @@
                 </div>
                 
                 <!-- 毎週の場合 -->
-        		<div id="weeklyOption" th:style="${task.repeatFrequency == 'weekly'} ? '' : 'display:none;'">
-            		<label>曜日選択:</label><br>
-					<div th:each="day : ${weekdays}">
-    					<input type="checkbox"
-           					name="weekday"
-           					th:value="${day}"
-           					th:checked="${task.repeatWeekdays != null and task.repeatWeekdays.contains(day)}"/>
-    					<span th:text="${day}"></span>
-					</div>
-        		</div>
+        		<div id="weeklyOption"
+                     th:if="${log.task.repeatFrequency == 'weekly'}">
+                    <label>曜日選択:</label><br>
+                    <div th:each="day : ${weekdays}">
+                        <input type="checkbox"
+                               name="task.repeatWeekdays"
+                               th:value="${day}"
+                               th:checked="${log.task.repeatWeekdays != null and log.task.repeatWeekdays.contains(day)}"/>
+                        <span th:text="${day}"></span>
+                    </div>
+                </div>
 
 
         		<!-- 毎月の場合 -->
-        		<div id="monthlyOption" th:style="${task.repeatFrequency == 'monthly'} ? '' : 'display:none;'">
-            		<label>日付指定:</label>
-            		<input type="number" min="1" max="31" name="monthDay"
-                   	th:value="${task.repeatMonthDay}" class="form-control w-auto d-inline-block">
-        		</div>
+        		<div id="monthlyOption"
+                     th:if="${log.task.repeatFrequency == 'monthly'}">
+                    <label>日付指定:</label>
+                    <input type="number" min="1" max="31"
+                           th:field="*{task.repeatMonthDay}" class="form-control w-auto d-inline-block"/>
+                </div>
         	</div>
                 
 
@@ -112,7 +119,7 @@
                         <img src="/img/rest.png" alt="休養"><div class="category-name">休養</div>
                     </div>
                 </div>
-                <input type="hidden" name="categoryCode" id="selectedCategory" th:value="*{categoryCode}"/>
+                <input type="hidden" name="categoryCode" id="selectedCategory" th:value="*{task.categoryCode}"/>
             </div>
 
             <!-- 保存 / 更新ボタン -->
@@ -151,4 +158,4 @@
     });
 </script>
 </body>
-</html></html>
+</html>

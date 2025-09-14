@@ -13,75 +13,54 @@
 			<div class="container pt-4 pb-5 edelweiss-container">
 				<div class="page" th:data-date="${date}">
 					<!-- ナビゲーション（前日・翌日） -->
-					<a class="nav" th:href="@{/tasks/{d}(d=${#temporals.format(dateObj.minusDays(1), 'yyyy-MM-dd')})}">&lt;</a>
+					<a class="nav" th:href="@{/logs/{d}(d=${#temporals.format(dateObj.minusDays(1), 'yyyy-MM-dd')})}">&lt;</a>
 					<input class="date-input" type="date" th:value="${date}" id="datePicker"/>
-					<a class="nav" th:href="@{/tasks/{d}(d=${#temporals.format(dateObj.plusDays(1), 'yyyy-MM-dd')})}">&gt;</a>
+					<a class="nav" th:href="@{/logs/{d}(d=${#temporals.format(dateObj.plusDays(1), 'yyyy-MM-dd')})}">&gt;</a>
 					
 					<h3 class="title">本日のタスク</h3>
 					
-					<!-- ☆ 未達成 -->
-					<h5 class="mt-4">☆未達成</h5>
-					<div th:if="${#lists.isEmpty(incompleteTasks)}" class="text-muted small">未達成タスクはありません</div>
-					<div th:each="task : ${incompleteTasks}" class="task-item">
-						<div class="task-content">
-							<input type="checkbox"
-							th:value="${task.id}"
-							th:onchange="toggleTaskCompletion([[${task.id}]], this.checked, '[[${date}]]')"/>
-							<span class="category-label" th:classappend="'cat-' + ${task.categoryCode}"></span>
-							<span class="streak-text"
-							th:text="${task.currentStreak + '日連続達成中 / 累計' + task.maxStreak + '日達成'}"></span>
-						</div>
-						<div>
-                			<a th:href="@{'/tasks/edit/' + ${task.id} + '?date=' + ${date}}" class="btn btn-sm btn-outline-primary btn-edit">編集</a>
-                			<form th:action="@{/tasks/delete}" method="post" style="display:inline;">
-                    			<input type="hidden" name="taskId" th:value="${task.id}"/>
+			       <!-- ☆ 未達成 -->
+			       <h5 class="mt-4">☆未達成</h5>
+			       <div th:if="${#lists.isEmpty(incompleteLogs)}" class="text-muted small">未達成タスクはありません</div>
+			       <div th:each="task : ${incompleteLogs}" class="task-item">
+					   <div class="task-content">
+						   <label class="task-check">
+							   <input type="checkbox"
+							   th:value="${task.id}"
+							   th:onchange="toggleTaskCompletion([[${task.id}]], this.checked, '[[${date}]]', this.dataset.title)"/>
+							   <span class="task-title" th:text="${task.task.title}"></span>
+						   </label>
+					   </div>
+            	   	   <div>
+							  <a th:href="@{'/logs/edit/' + ${task.id} + '?date=' + ${date}}" class="btn btn-sm btn-outline-primary">編集</a>
+							  <form th:action="@{/logs/delete}" method="post" style="display:inline;">
+                    			<input type="hidden" name="logId" th:value="${task.id}"/>
                     			<input type="hidden" name="date" th:value="${date}"/>
-                    			<button type="submit" class="btn btn-sm btn-outline-danger btn-delete">削除</button>
-                			</form>
+                    			<button type="submit" class="btn btn-sm btn-outline-danger">削除</button>
+                			  </form>
+            		   </div>
+        		   </div>
+
+        			<!-- ★ 達成済 -->
+        			<h5 class="mt-4">★達成済</h5>
+        			<div th:if="${#lists.isEmpty(completedLogs)}" class="text-muted small">達成済タスクはありません</div>
+        			<div th:each="task : ${completedLogs}" class="task-item">
+            			<div class="task-content">
+                			<label class="task-check">
+                    			<input type="checkbox" th:value="${task.id}" th:checked="${task.done}"/>
+                    			<span class="task-title" th:text="${task.task.title}"></span>
+                			</label>
             			</div>
         			</div>
-					
-					<!-- ★ 達成済 -->
-					<h5 class="mt-4">★達成済</h5>
-					<div th:if="${#lists.isEmpty(completedTasks)}" class="text-muted small">達成済タスクはありません</div>
-					<div th:each="task : ${completedTasks}" class="task-item">
-						<div class="task-content">
-							<input type="checkbox"
-								th:value="${task.id}"
-								th:checked="${task.done}"
-								th:onchange="toggleTaskCompletion([[${task.id}]], this.checked, '[[${date}]]')"/>
-								<span class="task-title" th:text="${task.title}"></span>
-								<span class="category-label" th:classappend="'cat-' + ${task.categoryCode}"></span>
-								<span class="streak-text"
-									th:text="${task.currentStreak + '日連続達成中 / 累計' + task.maxStreak + '日達成'}"></span>
-						</div>
-					<div>
-                	<a th:href="@{'/tasks/edit/' + ${task.id} + '?date=' + ${date}}" class="btn btn-sm btn-outline-primary btn-edit">編集</a>
-                	<form th:action="@{/tasks/delete}" method="post" style="display:inline;">
-                    	<input type="hidden" name="taskId" th:value="${task.id}"/>
-                    	<input type="hidden" name="date" th:value="${date}"/>
-                    	<button type="submit" class="btn btn-sm btn-outline-danger btn-delete">削除</button>
-                	</form>
-            	</div>
-        	</div>
-    	</main>
+    			</div>
+			</div>
+		</main>
 
     	<!-- 追加ボタン -->
-    	<a th:href="@{/tasks/new(date=${date})}" class="floating-add-btn">+</a>
+    	<a th:href="@{/logs/new(date=${date})}" class="floating-add-btn">+</a>
 
         <div th:replace="~{fragment :: footer}"></div>
         <div th:replace="~{fragment :: scripts}"></div>
-        <script>
-    		function toggleTaskCompletion(taskId, isChecked, date) {
-        	$.post("/tasks/toggle", {taskId: taskId, done: isChecked, date: date})
-        	.done(function() {
-            	window.location.href = "/tasks/" + date;
-        	})
-        	.fail(function() {
-            	alert("エラーが発生しました");
-        	});
-    		}
-		</script>
         </div>
 	</body>
 </html>   

@@ -314,6 +314,12 @@ footer {
     box-shadow: 0 4px 6px rgba(0,0,0,0.2); 
 }
 
+.day-cell.has-task {
+    border: 2px solid #4caf50;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
 /* daytask page */
 .page {
 	max-width:760px;
@@ -411,6 +417,15 @@ footer {
 	color: #ff4d4d;
 	margin-left: 10px;
 }
+
+.task-check {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.task-check input {
+    margin-right: 8px;
+}
         
 /* ボタン */
 .btn-edit, .btn-delete {
@@ -446,6 +461,25 @@ footer {
     font-size: 2rem;
     text-decoration: none;
     box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+/* 達成後のフッター */
+.footer-message {
+    position: fixed;
+    bottom: 60px; /* フッターの少し上 */
+    left: 50%;
+    transform: translateX(-50%);
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 0.9;
+    font-size: 14px;
+    transition: opacity 0.5s ease;
+}
+.footer-message.fade-out {
+    opacity: 0;
 }
 
 /* タスク新規作成 */
