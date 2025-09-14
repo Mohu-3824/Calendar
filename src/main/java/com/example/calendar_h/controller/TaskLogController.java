@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.calendar_h.entity.TaskLog;
 import com.example.calendar_h.entity.TaskMaster;
 import com.example.calendar_h.entity.User;
+import com.example.calendar_h.repository.TaskMasterRepository;
 import com.example.calendar_h.repository.UserRepository;
 import com.example.calendar_h.service.TaskLogService;
 
@@ -28,7 +29,9 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/logs")
 public class TaskLogController {
 
+	private final UserRepository userRepository;
     private final TaskLogService taskLogService;
+    private final TaskMasterRepository taskMasterRepository;
     private static final DateTimeFormatter DF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /** 日次タスク表示 */
@@ -59,7 +62,7 @@ public class TaskLogController {
 
     /** 新規タスクフォーム表示 */
     @GetMapping("/new")
-    public String newLogForm(@RequestParam(required = false) String date, Model model) {
+    public String newLogForm(@RequestParam(required = false) Integer taskId, String date, Model model) {   	
         LocalDate selectedDate = (date == null || date.isBlank())
                 ? LocalDate.now()
                 : LocalDate.parse(date, DF);
@@ -80,12 +83,16 @@ public class TaskLogController {
     /** 新規タスク保存 */
     @PostMapping("/new")
     public String createLog(@ModelAttribute TaskLog log,
-                            @RequestParam String logDate, UserRepository userRepository) {
+                            @RequestParam String logDate) {
         Integer userId = 1;
         User user = userRepository.findById(userId)
         	    .orElseThrow(() -> new RuntimeException("User not found"));
         
+        TaskMaster task = taskMasterRepository.findById(log.getTask().getId())
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+        
         log.setUser(user);
+        log.setTask(task);
         log.setLogDate(LocalDate.parse(logDate, DF));
         log.setDone(false);
         log.setCurrentStreak(0);
