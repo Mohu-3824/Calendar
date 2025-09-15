@@ -20,13 +20,13 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/calendar/**", "/logs/**").authenticated()  // ログインが必要なURL
+                .requestMatchers("/**","/calendar/**", "/logs/**").authenticated()  // ログインが必要なURL
                 .anyRequest().permitAll()                   // 上記以外のURLはすべてのユーザーにアクセスを許可する
             )
             .formLogin((form) -> form
                 .loginPage("/login")              // ログインページのURL
                 .loginProcessingUrl("/login")     // ログインフォームの送信先URL
-                .defaultSuccessUrl("/?loggedIn", true)  // ログイン成功時のリダイレクト先URL
+                .defaultSuccessUrl("/calendar", true)  // ログイン成功時のリダイレクト先URL
                 .failureUrl("/login?error")       // ログイン失敗時のリダイレクト先URL
                 .permitAll()
             )

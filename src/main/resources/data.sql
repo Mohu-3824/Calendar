@@ -7,7 +7,7 @@ INSERT IGNORE INTO users (id, name, furigana, phone_number, email, password, ena
 (5, '木下　純一', 'キノシタ　ジュンイチ','090-1234-5678', 'junichi.kinoshita@example.com', '$2a$10$2JNjTwZBwo7fprL2X4sv.OEKqxnVtsVQvuXDkI8xVGix.U3W5B7CO', true);
 
 /* task_masterテーブル */
-INSERT INTO task_master 
+INSERT IGNORE INTO task_master 
 (user_id, title, category_code, repeat_type, repeat_frequency, repeat_weekdays, repeat_month_day, repeat_end_date) 
 VALUES
 -- 🏋️‍♂️ ユーザー1: 週3回の筋トレ（無期限）
@@ -26,7 +26,7 @@ VALUES
 (2, '部屋の掃除', 'lifestyle', 'repeat', 'weekly', 'Sat', NULL, NULL);
 
 /* task_logテーブル */
-INSERT INTO task_log 
+INSERT IGNORE INTO task_log 
 (task_id, user_id, log_date, done, current_streak, max_streak) 
 VALUES
 -- ユーザー1: 筋トレ（前日失敗→今日成功）
