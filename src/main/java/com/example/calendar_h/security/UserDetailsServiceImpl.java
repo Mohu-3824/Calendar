@@ -17,10 +17,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 	
 	@Override
-	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		 // emailでユーザーを検索し、見つからなければ例外
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("ユーザーが見つかりませんでした: " + email));
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("ユーザーが見つかりませんでした: "));
 
         // UserをUserDetailsImplに変換
         return new UserDetailsImpl(user);

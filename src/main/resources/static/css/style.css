@@ -238,6 +238,319 @@ footer {
     padding: 12px 16px;
 }
 
+/* Calendar page */
+.calendar-container { 
+	max-width:600px; 
+	margin:20px auto; 
+	background:#fff;
+  	border-radius:12px; 
+  	box-shadow:0 4px 12px rgba(0,0,0,.1); 
+  	padding:20px; 
+}
+
+.calendar-header { 
+	display:flex; 
+	justify-content:center; 
+	align-items:center;
+	 position:relative; 
+}
+
+.month-year { 
+	margin:0 20px; 
+	font-size:22px; 
+	font-weight:bold; 
+}
+
+.settings-btn { 
+	position:absolute; 
+	right:0; 
+	background:none; 
+	border:none; 
+	cursor:pointer; 
+}
+
+.weekdays { 
+	display:grid; 
+	grid-template-columns:repeat(7,1fr); 
+	text-align:center; 
+	margin-top:10px; 
+}
+
+.calendar-grid { 
+	display:grid; 
+	grid-template-columns:repeat(7,1fr); 
+	gap:4px; 
+	margin-top:10px;
+}
+
+.day-cell { 
+	background:#fff; 
+	border:1px solid #ddd; 
+	min-height:80px; 
+	padding:5px; 
+	border-radius:8px; 
+}
+
+.day-cell.today { 
+	border:2px solid #2196f3; 
+	background:#e3f2fd; 
+}
+
+.fab-btn { 
+	position:fixed; 
+	right:20px; 
+	bottom:90px; 
+	width:50px; 
+	height:50px;
+	border-radius: 50%;
+    background-color: #0080ff; 
+  	color:#fff; 
+  	border:none; 
+  	font-size:2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2); 
+}
+
+.day-cell.has-task {
+    border: 2px solid #4caf50;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+/* daytask page */
+.page {
+	max-width:760px;
+	margin:20px auto;
+	padding:20px;
+	background:var(--card);
+  	border-radius:14px;
+  	box-shadow:0 8px 24px rgba(0,0,0,.06)
+}
+
+.date-nav {
+	display:flex;
+	gap:12px;
+	align-items:center;
+	justify-content:center
+}
+
+.date-input {
+	padding:6px 10px;
+	border:1px solid var(--bd);
+	border-radius:8px
+}
+
+.nav {
+	display:inline-block;
+	padding:6px 10px;
+	border-radius:8px;
+}
+
+.cat-study { 
+	background-color: #ff99ff; 
+	padding: 2px 6px; 
+	border-radius: 4px; 
+}
+
+.cat-hobby { 
+	background-color: #66ff66; 
+	padding: 2px 6px; 
+	border-radius: 4px; 
+}
+
+.cat-beauty { 
+	background-color: #ffff66; 
+	padding: 2px 6px; 
+	border-radius: 4px; 
+}
+
+.streak { 
+	font-size: 0.8em; 
+	color: red; 
+	margin-left: 8px; 
+}
+
+/* カテゴリ色 */
+.cat-study { 
+	background-color: #f0d9ff; 
+}
+
+.cat-hobby { 
+	background-color: #d1f7c4; 
+}
+
+.cat-beauty { 
+	background-color: #ffe6a7; 
+}
+.category-label {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 5px;
+	margin-left: 8px;
+	font-size: 0.85rem;
+}
+
+/* タスク行 */
+.task-item {
+	display: flex;
+	align-items: center;
+ 	justify-content: space-between;
+	padding: 6px 0;
+ 	border-bottom: 1px solid #eee;
+}
+
+.task-content {
+	display: flex;
+	align-items: center;
+	}
+	
+.task-title {
+	font-weight: 500;
+	margin-left: 8px;
+}
+
+.streak-text {
+	font-size: 0.8rem;
+	color: #ff4d4d;
+	margin-left: 10px;
+}
+
+.task-check {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.task-check input {
+    margin-right: 8px;
+}
+        
+/* ボタン */
+.btn-edit, .btn-delete {
+	font-size: 0.8rem;
+	padding: 2px 6px;
+}
+        
+/* 日付ナビ */
+.date-nav {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 15px;
+}
+        
+.date-input {
+	margin: 0 10px;
+}
+        
+/* 固定の追加ボタン */
+.floating-add-btn {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: #0080ff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+/* 達成後のフッター */
+.footer-message {
+    position: fixed;
+    bottom: 60px; /* フッターの少し上 */
+    left: 50%;
+    transform: translateX(-50%);
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 0.9;
+    font-size: 14px;
+    transition: opacity 0.5s ease;
+}
+.footer-message.fade-out {
+    opacity: 0;
+}
+
+/* タスク新規作成 */
+/* 上部直近タスク表示 */
+.recent-task-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.recent-task {
+	border-radius: 4px;
+	padding: 6px 10px;
+	font-size: 0.85rem;
+	color: #fff;
+	display: inline-block;
+}
+
+.cat-hobby { 
+	background-color: #4CAF50; 
+}
+
+.cat-study { 
+	background-color: #f06292; 
+}
+
+.cat-exercise { 
+	background-color: #fbc02d; 
+}
+
+/* カテゴリー選択ボタン */
+.category-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 15px;
+	margin-top: 10px;
+}
+
+.category-item {
+	border: 2px solid #ccc;
+	border-radius: 8px;
+	padding: 50px;
+	text-align: center;
+	cursor: pointer;
+	transition: border 0.3s, background-color 0.3s;
+}
+
+.category-item.selected {
+	border-color: #007bff;
+	background-color: #eaf5ff;
+}
+
+.category-item img {
+	width: 50px;
+	height: 50px;
+}
+
+.category-name {
+	padding: 5px;
+}
+
+.save-btn {
+	background-color: orange;
+	border: none;
+	padding: 10px 20px;
+	width: 100%;
+	font-weight: bold;
+	border-radius: 6px;
+	color: white;
+}
+
 @media screen and (min-width: 1400px) {
  .samuraitravel-container {
    max-width: 1200px;

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head>
+    	<div th:replace="~{fragment :: meta}"></div>
+		<div th:replace="~{fragment :: styles}"></div>
+
+    	<title>Edelweiss_カレンダー画面</title>
+	</head>
+	<body>
+		<div class="edelweiss-wrapper">
+			<div th:replace="~{fragment :: header}"></div>
+    		<div class="calendar-container">
+		
+        		<!-- ヘッダー部分 -->
+        		<div class="calendar-header">
+            		<button class="nav-btn prev-btn">&lt;</button>
+            		<h2 class="month-year">9月</h2>
+            		<button class="nav-btn next-btn">&gt;</button>
+            		<button class="settings-btn" title="カテゴリー設定">
+                	<i class="fas fa-cog"></i>
+            		</button>
+        		</div>
+
+    			<!-- 曜日 -->
+  				<div class="weekdays">
+    				<div>日</div><div>月</div><div>火</div><div>水</div>
+    				<div>木</div><div>金</div><div>土</div>
+  				</div>
+  
+  				<!-- カレンダー本体 -->
+  				<div class="calendar-grid" id="calendarGrid" 
+       				th:data-today="${today}">
+  				</div>
+
+          		<!-- ＋ボタン -->
+  				<button class="fab-btn"><i class="fas fa-plus"></i></button>
+			</div>
+
+			<div th:replace="~{fragment :: footer}"></div>
+		</div>
+		<div th:replace="~{fragment :: scripts}"></div>
+	</body>
+</html>
