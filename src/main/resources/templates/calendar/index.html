@@ -17,7 +17,7 @@
             		<h2 class="month-year">9月</h2>
             		<button class="nav-btn next-btn">&gt;</button>
             		<button class="settings-btn" title="カテゴリー設定">
-                	<i class="fas fa-cog"></i>
+                	<i id="setting" class="fas fa-cog"></i>
             		</button>
         		</div>
 
@@ -39,5 +39,6 @@
 			<div th:replace="~{fragment :: footer}"></div>
 		</div>
 		<div th:replace="~{fragment :: scripts}"></div>
+		<script th:src="@{/js/siteRouting.js}"></script>
 	</body>
 </html>

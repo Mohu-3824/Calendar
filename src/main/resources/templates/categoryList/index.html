@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head>
+    	<div th:replace="~{fragment :: meta}"></div>
+		<div th:replace="~{fragment :: styles}"></div>
+
+    	<title>カテゴリー一覧</title>
+	</head>
+	<body>
+		<div class="edelweiss-wrapper">
+		<div th:replace="~{fragment :: header}"></div>
+
+    <main>
+        <h2 class="page-title">カテゴリー一覧</h2>
+
+        <!-- カテゴリーテーブル -->
+        <table class="category-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>カテゴリー名</th>
+                    <th>アイコン</th>
+                    <th>色</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="category : ${categoryList}">
+                    <td><input type="checkbox" th:value="${category.id}"></td>
+                    <td th:text="${category.categoryName}"></td>
+                    <td><img th:src="@{/img/{file}(file=${category.iconImage})}" alt="アイコン" style="width:30px; height:40px;" /></td>
+                    <td>
+                        <span class="color-box" th:style="'background-color:' + ${category.colorCode}"></span>
+                    </td>
+                    <td>
+                        <button class="btn-edit">編集</button>
+                        <button class="btn-delete">削除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 戻るボタン -->
+        <div class="center-btn">
+            <button onclick="history.back()">戻る</button>
+        </div>
+        <!-- 右下の＋ボタン -->
+    <button class="fab-btn" title="追加">
+        <i class="fas fa-plus"></i>
+    </button>
+    </main>
+        	<div th:replace="~{fragment :: footer}"></div>
+        </div>
+        <div th:replace="~{fragment :: scripts}"></div>
+	</body>
+</html>     

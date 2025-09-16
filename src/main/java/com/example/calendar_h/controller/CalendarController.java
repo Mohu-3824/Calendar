@@ -10,14 +10,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.calendar_h.entity.Category;
+import com.example.calendar_h.service.CategoryService;
 import com.example.calendar_h.service.TaskLogService;
 
 @Controller
 public class CalendarController {
 	private final TaskLogService taskLogService;
-	
-	public CalendarController(TaskLogService taskLogService) {
+	private final CategoryService categoryService;
+
+	public CalendarController(TaskLogService taskLogService,CategoryService categoryService) {
 		this.taskLogService = taskLogService;
+		this.categoryService = categoryService;
 	}
 	@GetMapping("/calendar")
 	public String showCalendar(Model model) {
@@ -43,4 +47,12 @@ public class CalendarController {
 	            })
 	            .toList();
 	}
+
+	@GetMapping("/categoryList")
+	public String getCategoryList(Model model) {
+		List<Category>categoryList =  categoryService.getAll();
+		model.addAttribute("categoryList", categoryList);
+		return "categoryList/index";
+	}
+
 }
