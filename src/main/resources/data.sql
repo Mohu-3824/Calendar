@@ -6,6 +6,14 @@ INSERT IGNORE INTO users (id, name, furigana, phone_number, email, password, ena
 (4, '佐藤　信子', 'サトウ　ノブコ','090-1234-5678', 'nobuko.sato@example.com', '$2a$10$2JNjTwZBwo7fprL2X4sv.OEKqxnVtsVQvuXDkI8xVGix.U3W5B7CO', true),
 (5, '木下　純一', 'キノシタ　ジュンイチ','090-1234-5678', 'junichi.kinoshita@example.com', '$2a$10$2JNjTwZBwo7fprL2X4sv.OEKqxnVtsVQvuXDkI8xVGix.U3W5B7CO', true);
 
+/* categoriesテーブル */
+INSERT IGNORE INTO categories (user_id, category_name, icon_image, color_code) VALUES
+(1, '運動', NULL, '#FFD700'),
+(1, '趣味', NULL, '#98FB98'),
+(1, '勉強', NULL, '#FF7F50'),
+(2, '運動', NULL, '#FFD700'),
+(2, '生活', NULL, '#FFA07A');
+
 /* task_masterテーブル */
 INSERT IGNORE INTO task_master 
 (user_id, title, category_code, repeat_type, repeat_frequency, repeat_weekdays, repeat_month_day, repeat_end_date) 

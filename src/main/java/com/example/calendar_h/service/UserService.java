@@ -29,7 +29,7 @@ public class UserService {
 		user.setPhoneNumber(signupForm.getPhoneNumber());
 		user.setEmail(signupForm.getEmail());
 		user.setPassword(passwordEncoder.encode(signupForm.getPassword()));
-		user.setEnabled(true);
+		user.setEnabled(false);
 		
 		return userRepository.save(user);
 	}

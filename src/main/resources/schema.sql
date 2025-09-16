@@ -1,3 +1,4 @@
+-- ユーザーテーブル
 CREATE TABLE IF NOT EXISTS users (
 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(50) NOT NULL,
@@ -10,6 +11,32 @@ CREATE TABLE IF NOT EXISTS users (
 	updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP	
 );
 
+-- メール認証用テーブル
+CREATE TABLE IF NOT EXISTS verification_tokens (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL UNIQUE,
+    token VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+-- カテゴリーテーブル
+CREATE TABLE IF NOT EXISTS categories (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    category_name VARCHAR(20) NOT NULL,
+    icon_image VARCHAR(255), -- アイコン画像のパスまたはURL
+    color_code VARCHAR(7), -- 例: #FFFFFF
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_categories_users FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+-- タスクマスターテーブル
 CREATE TABLE IF NOT EXISTS task_master (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -25,6 +52,7 @@ CREATE TABLE IF NOT EXISTS task_master (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- タスクログテーブル
 CREATE TABLE IF NOT EXISTS task_log (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     task_id INT NOT NULL,                  -- マスターのID

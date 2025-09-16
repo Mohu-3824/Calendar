@@ -20,7 +20,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/**","/calendar/**", "/logs/**").authenticated()  // ログインが必要なURL
+                .requestMatchers("/calendar/**", "/logs/**").authenticated()  // ログインが必要なURL
                 .anyRequest().permitAll()                   // 上記以外のURLはすべてのユーザーにアクセスを許可する
             )
             .formLogin((form) -> form
