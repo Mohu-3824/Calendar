@@ -16,39 +16,38 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfig {
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/**","/calendar/**", "/logs/**").authenticated()  // ログインが必要なURL
-                .anyRequest().permitAll()                   // 上記以外のURLはすべてのユーザーにアクセスを許可する
-            )
-            .formLogin((form) -> form
-                .loginPage("/login")              // ログインページのURL
-                .loginProcessingUrl("/login")     // ログインフォームの送信先URL
-                .defaultSuccessUrl("/calendar", true)  // ログイン成功時のリダイレクト先URL
-                .failureUrl("/login?error")       // ログイン失敗時のリダイレクト先URL
-                .permitAll()
-            )
-            .logout((logout) -> logout
-                .logoutSuccessUrl("/?loggedOut")  // ログアウト時のリダイレクト先URL
-                .permitAll()
-            );
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+				.authorizeHttpRequests((requests) -> requests
+						.requestMatchers("/calendar/**", "/logs/**").authenticated() // ログインが必要なURL
+						.anyRequest().permitAll() // 上記以外のURLはすべてのユーザーにアクセスを許可する
+				)
+				.formLogin((form) -> form
+						.loginPage("/login") // ログインページのURL
+						.loginProcessingUrl("/login") // ログインフォームの送信先URL
+						.defaultSuccessUrl("/calendar", true) // ログイン成功時のリダイレクト先URL
+						.failureUrl("/login?error") // ログイン失敗時のリダイレクト先URL
+						.permitAll())
+				.logout((logout) -> logout
+						.logoutSuccessUrl("/?loggedOut") // ログアウト時のリダイレクト先URL
+						.permitAll());
 
-        return http.build();
-    }
+		return http.build();
+	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    
-    @Bean
-    public AuthenticationManager authManager(HttpSecurity http, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder)
-                .and()
-                .build();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public AuthenticationManager authManager(HttpSecurity http, PasswordEncoder passwordEncoder,
+			UserDetailsService userDetailsService) throws Exception {
+		return http.getSharedObject(AuthenticationManagerBuilder.class)
+				.userDetailsService(userDetailsService)
+				.passwordEncoder(passwordEncoder)
+				.and()
+				.build();
+	}
 }
