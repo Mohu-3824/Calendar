@@ -147,16 +147,6 @@ $(document).on("click", ".day-cell", function(){
         task.find('input[type="checkbox"]').prop('checked', toCompleted);
     }
     
-  	window.location.href = `/tasks/edit/${taskId}?date=${date}`;
-      const selected = document.getElementById('selectedCategory').value;
-    if (selected) {
-        document.querySelectorAll('.category-item').forEach(item => {
-            if (item.dataset.code === selected) {
-                item.classList.add('selected');
-            }
-        });
-    }
-    
     /* ======================
        💬 下部メッセージ表示
     ====================== */

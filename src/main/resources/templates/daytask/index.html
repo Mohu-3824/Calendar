@@ -18,13 +18,13 @@
 					<a class="nav" th:href="@{/tasks/{d}(d=${#temporals.format(dateObj.plusDays(1), 'yyyy-MM-dd')})}">&gt;</a>
 					
 					<h3 class="title">本日のタスク</h3>
-					
-			       <div th:if="${#lists.isEmpty(tasks)}" class="text-muted small">タスクはありません</div>
 			       <!-- 未達成タスク -->
-					<h5>★未達成タスク</h5>
+					<h5 class="mt-4">★未達成</h5>					
+			        <div th:if="${#lists.isEmpty(tasks)}" class="text-muted small">タスクはありません</div>
 					<table border="1">
     					<thead>
         					<tr>
+								<th>id</th>
             					<th>タイトル</th>
             					<th>ステータス</th>
             					<th>累計達成日数</th>
@@ -32,19 +32,45 @@
         					</tr>
     					</thead>
     					<tbody>
-        					<tr th:each="task : ${incompleteTasks}">
+        					<tr th:each="task : ${incompleteTasks}" th:if="${task != null}">
+								<td th:text="${task.id}"></td>
             					<td th:text="${task.title}"></td>
             					<td th:text="'未完了'"></td>
             					<td th:text="${totalCompletedDays}"></td>
             					<td th:text="${consecutiveCompletedDays}"></td>
+            					<td>
+            					<!-- 削除ボタン -->
+            					<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-task-id="${task.id}">削除</button>
+        						</td>
         					</tr>
     					</tbody>
+    					<!-- モーダル -->
+						<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    						<div class="modal-dialog" role="document">
+        						<div class="modal-content">
+            						<div class="modal-header">
+                						<h5 class="modal-title" id="deleteModalLabel">タスク削除確認</h5>
+                						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    						<span aria-hidden="true">&times;</span>
+                						</button>
+            						</div>
+            						<div class="modal-body">
+                						本当にタスクを削除してもよろしいですか？
+            						</div>
+            						<div class="modal-footer">
+                						<button type="button" class="btn btn-secondary" data-dismiss="modal">いいえ</button>
+                						<button type="button" class="btn btn-danger" id="confirmDelete">はい</button>
+            						</div>
+        						</div>
+    						</div>
+						</div>
 					</table>
 					<!-- 達成済タスク -->
-					<h5>★達成済タスク</h5>
+					<h5 class="mt-4">★達成済</h5>
 					<table border="1">
     					<thead>
         					<tr>
+								<th>id</th>
             					<th>タイトル</th>
             					<th>ステータス</th>
             					<th>累計達成日数</th>
@@ -52,7 +78,8 @@
         					</tr>
     					</thead>
     					<tbody>
-        					<tr th:each="task : ${completeTasks}">
+        					<tr th:each="task : ${completeTasks}" th:if="${task != null}">
+								<td th:text="${task.id}"></td>
             					<td th:text="${task.title}"></td>
             					<td th:text="'完了'"></td>
             					<td th:text="${totalCompletedDays}"></td>
@@ -69,6 +96,39 @@
 
         <div th:replace="~{fragment :: footer}"></div>
         <div th:replace="~{fragment :: scripts}"></div>
+        <script>
+    		let taskIdToDelete = null;
+
+    		// モーダルが表示される前にタスクIDを取得
+    		$('#deleteModal').on('show.bs.modal', function (event) {
+        		var button = $(event.relatedTarget); // 削除ボタン
+        		taskIdToDelete = button.data('task-id');
+        		console.log("taskIdToDelete: " + taskIdToDelete); // デバッグ用：IDが取得されているか確認
+    		});
+
+    		// 「はい」ボタンが押されたときにタスクを削除
+    		$('#confirmDelete').click(function() {
+        		if (taskIdToDelete !== null) {
+            		// Ajaxで削除リクエストを送信
+            		$.ajax({
+                		url: '/tasks/delete/' + taskIdToDelete,
+                		type: 'DELETE',
+                		headers: {
+        					'X-CSRF-TOKEN': $('meta[name="_csrf"]').attr('content')
+    					},
+    					success: function(response) {
+        					console.log(response.message); // サーバーからのメッセージ
+        					location.reload();
+    					},
+    					error: function(xhr) {
+        					// サーバーが返したJSONメッセージを表示
+        					alert('削除に失敗しました: ' + (xhr.responseJSON?.message || '不明なエラー'));
+    					}
+            		});
+        		}
+        		$('#deleteModal').modal('hide'); // モーダルを閉じる
+    		});
+		</script>
         </div>
 	</body>
 </html>   

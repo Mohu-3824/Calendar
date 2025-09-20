@@ -2,6 +2,7 @@ package com.example.calendar_h.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -19,4 +20,7 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
 
 	// 連続達成日数を取得するため、完了したタスクの日付一覧を取得
 	List<Task> findDistinctLogDateByUser_IdAndStatus(Integer userId, boolean status);
+
+	// ユーザーIDとタスクIDに基づいてタスクを取得
+	Optional<Task> findByIdAndUser_Id(Integer id, Integer userId);
 }

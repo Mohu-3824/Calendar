@@ -3,18 +3,25 @@ package com.example.calendar_h.controller;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.calendar_h.entity.Task;
 import com.example.calendar_h.repository.UserRepository;
@@ -55,8 +62,8 @@ public class TaskController {
 		Integer userId = userDetailsImpl.getUser().getId();
 
 		// タスク一覧を取得
-		List<Task> tasks = taskService.getTasksByUserAndDate(userId, logDate);
-
+		List<Task> tasks = Optional.ofNullable(taskService.getTasksByUserAndDate(userId, logDate))
+				.orElse(Collections.emptyList());
 		// 完了タスクと未完了タスクを分ける
 		List<Task> completeTasks = tasks.stream().filter(task -> task.getStatus()).collect(Collectors.toList());
 		List<Task> incompleteTasks = tasks.stream().filter(task -> !task.getStatus()).collect(Collectors.toList());
@@ -75,5 +82,25 @@ public class TaskController {
 		model.addAttribute("dateObj", logDate); // LocalDate型
 
 		return "daytask/index"; // daytask/index.htmlにデータを渡して表示
+	}
+
+	// タスク削除
+	@DeleteMapping("/delete/{id}")
+	@PreAuthorize("isAuthenticated()")
+	@ResponseBody
+	public ResponseEntity<Map<String, String>> deleteTask(@PathVariable("id") Integer taskId,
+			@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, RedirectAttributes redirectAttributes) {
+		Integer userId = userDetailsImpl.getUser().getId();
+		Optional<Task> optionalTask = taskService.getTaskByIdAndUser(taskId, userId);
+
+		if (optionalTask.isPresent()) {
+			taskService.deleteTask(optionalTask.get());
+			// 成功時は 200 OK + JSON メッセージを返す
+			return ResponseEntity.ok(Map.of("message", "タスクを削除しました。"));
+		} else {
+			// 見つからなければ 404 Not Found を返す
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(Map.of("message", "タスクが見つかりませんでした。"));
+		}
 	}
 }

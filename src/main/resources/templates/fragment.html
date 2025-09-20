@@ -5,6 +5,8 @@
 		<div th:fragment="meta" th:remove="tag">
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<meta name="_csrf" th:content="${_csrf.token}"/>
+			<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 		</div>
 		
 		<!-- link要素の部品化 -->
@@ -80,18 +82,10 @@
 			
 			<!-- script要素の部品化 -->
 			<div th:fragment="scripts" th:remove="tag">
-				
+				<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 				<!-- Bootstrap -->
 				<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-				<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 				<script th:src="@{/js/calendar.js}"></script>
-				<script>
-					function toggleTaskCompletion(taskId, isChecked) {
-						$.post("/tasks/toggle", {taskId: taskId, done: isChecked})
-						.done(function() { location.reload(); })  // リロードして状態反映
-						.fail(function() { alert("エラーが発生しました"); });
-					}
-</script>
 			</div>	
 	</body>
 </html>

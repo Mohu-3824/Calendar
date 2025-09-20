@@ -3,8 +3,10 @@ package com.example.calendar_h.service;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.calendar_h.entity.Task;
 import com.example.calendar_h.repository.TaskRepository;
@@ -57,5 +59,16 @@ public class TaskService {
 		}
 
 		return consecutiveDays;
+	}
+
+	// タスクIDとユーザーIDに基づいてタスクを取得
+	public Optional<Task> getTaskByIdAndUser(Integer taskId, Integer userId) {
+		return taskRepository.findByIdAndUser_Id(taskId, userId);
+	}
+
+	// タスク削除
+	@Transactional
+	public void deleteTask(Task task) {
+		taskRepository.delete(task);
 	}
 }
