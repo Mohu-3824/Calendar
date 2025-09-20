@@ -13,51 +13,59 @@
 			<div class="container pt-4 pb-5 edelweiss-container">
 				<div class="page" th:data-date="${date}">
 					<!-- ナビゲーション（前日・翌日） -->
-					<a class="nav" th:href="@{/logs/{d}(d=${#temporals.format(dateObj.minusDays(1), 'yyyy-MM-dd')})}">&lt;</a>
+					<a class="nav" th:href="@{/tasks/{d}(d=${#temporals.format(dateObj.minusDays(1), 'yyyy-MM-dd')})}">&lt;</a>
 					<input class="date-input" type="date" th:value="${date}" id="datePicker"/>
-					<a class="nav" th:href="@{/logs/{d}(d=${#temporals.format(dateObj.plusDays(1), 'yyyy-MM-dd')})}">&gt;</a>
+					<a class="nav" th:href="@{/tasks/{d}(d=${#temporals.format(dateObj.plusDays(1), 'yyyy-MM-dd')})}">&gt;</a>
 					
 					<h3 class="title">本日のタスク</h3>
 					
-			       <!-- ☆ 未達成 -->
-			       <h5 class="mt-4">☆未達成</h5>
-			       <div th:if="${#lists.isEmpty(incompleteLogs)}" class="text-muted small">未達成タスクはありません</div>
-			       <div th:each="task : ${incompleteLogs}" class="task-item">
-					   <div class="task-content">
-						   <label class="task-check">
-							   <input type="checkbox"
-							   th:value="${task.id}"
-							   th:onchange="toggleTaskCompletion([[${task.id}]], this.checked, '[[${date}]]', this.dataset.title)"/>
-							   <span class="task-title" th:text="${task.task.title}"></span>
-						   </label>
-					   </div>
-            	   	   <div>
-							  <a th:href="@{'/logs/edit/' + ${task.id} + '?date=' + ${date}}" class="btn btn-sm btn-outline-primary">編集</a>
-							  <form th:action="@{/logs/delete}" method="post" style="display:inline;">
-                    			<input type="hidden" name="logId" th:value="${task.id}"/>
-                    			<input type="hidden" name="date" th:value="${date}"/>
-                    			<button type="submit" class="btn btn-sm btn-outline-danger">削除</button>
-                			  </form>
-            		   </div>
-        		   </div>
-
-        			<!-- ★ 達成済 -->
-        			<h5 class="mt-4">★達成済</h5>
-        			<div th:if="${#lists.isEmpty(completedLogs)}" class="text-muted small">達成済タスクはありません</div>
-        			<div th:each="task : ${completedLogs}" class="task-item">
-            			<div class="task-content">
-                			<label class="task-check">
-                    			<input type="checkbox" th:value="${task.id}" th:checked="${task.done}"/>
-                    			<span class="task-title" th:text="${task.task.title}"></span>
-                			</label>
-            			</div>
-        			</div>
+			       <div th:if="${#lists.isEmpty(tasks)}" class="text-muted small">タスクはありません</div>
+			       <!-- 未達成タスク -->
+					<h5>★未達成タスク</h5>
+					<table border="1">
+    					<thead>
+        					<tr>
+            					<th>タイトル</th>
+            					<th>ステータス</th>
+            					<th>累計達成日数</th>
+            					<th>連続達成日数</th>
+        					</tr>
+    					</thead>
+    					<tbody>
+        					<tr th:each="task : ${incompleteTasks}">
+            					<td th:text="${task.title}"></td>
+            					<td th:text="'未完了'"></td>
+            					<td th:text="${totalCompletedDays}"></td>
+            					<td th:text="${consecutiveCompletedDays}"></td>
+        					</tr>
+    					</tbody>
+					</table>
+					<!-- 達成済タスク -->
+					<h5>★達成済タスク</h5>
+					<table border="1">
+    					<thead>
+        					<tr>
+            					<th>タイトル</th>
+            					<th>ステータス</th>
+            					<th>累計達成日数</th>
+            					<th>連続達成日数</th>
+        					</tr>
+    					</thead>
+    					<tbody>
+        					<tr th:each="task : ${completeTasks}">
+            					<td th:text="${task.title}"></td>
+            					<td th:text="'完了'"></td>
+            					<td th:text="${totalCompletedDays}"></td>
+            					<td th:text="${consecutiveCompletedDays}"></td>
+        					</tr>
+    					</tbody>
+					</table>
     			</div>
 			</div>
 		</main>
 
     	<!-- 追加ボタン -->
-    	<a th:href="@{/logs/new(date=${date})}" class="floating-add-btn">+</a>
+    	<a th:href="@{/tasks/new(date=${date})}" class="floating-add-btn">+</a>
 
         <div th:replace="~{fragment :: footer}"></div>
         <div th:replace="~{fragment :: scripts}"></div>

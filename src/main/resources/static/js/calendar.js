@@ -55,7 +55,7 @@ $(function() {
     	if (validDates.length > 0) {
         	markTaskDays(validDates);
         }
-    }    
+    } 
 
     /* ======================
         🔍 APIでタスク有日をハイライト
@@ -91,7 +91,7 @@ $(function() {
   // 日付セルクリックで日別画面へ
 $(document).on("click", ".day-cell", function(){
   const date = $(this).data("date"); // "yyyy-MM-dd"
-  if (date) window.location.href = `/logs/${date}`; 
+  if (date) window.location.href = `/tasks/${date}`; 
   });
 
     /* ======================
@@ -169,32 +169,4 @@ $(document).on("click", ".day-cell", function(){
         setTimeout(() => { msgDiv.classList.add("fade-out"); }, 2000);
         setTimeout(() => { msgDiv.remove(); }, 3000);
     }
-    
-    window.addEventListener('DOMContentLoaded', () => {
-    const repeatType = /*[[${task.repeatType}]]*/ 'none';
-    const repeatFrequency = /*[[${task.repeatFrequency}]]*/ '';
-    const repeatWeekdays = /*[[${task.repeatWeekdays}]]*/ '';
-    const repeatMonthDay = /*[[${task.repeatMonthDay}]]*/ '';
-
-    // 繰り返し表示切替
-    if (repeatType === 'repeat') {
-        document.getElementById('repeatOptions').style.display = 'block';
-    }
-
-    // 頻度選択
-    document.querySelector('select[name="repeatFrequency"]').value = repeatFrequency;
-
-    if (repeatFrequency === 'weekly') {
-        document.getElementById('weeklyOption').style.display = 'block';
-        repeatWeekdays.split(',').forEach(day => {
-            const checkbox = document.querySelector(`input[name="weekday"][value="${day}"]`);
-            if (checkbox) checkbox.checked = true;
-        });
-    }
-
-    if (repeatFrequency === 'monthly') {
-        document.getElementById('monthlyOption').style.display = 'block';
-        document.querySelector('input[name="monthDay"]').value = repeatMonthDay || '';
-    }
-});
 });

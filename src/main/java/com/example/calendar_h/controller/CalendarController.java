@@ -4,24 +4,23 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.calendar_h.entity.Category;
-import com.example.calendar_h.service.CategoryService;
-import com.example.calendar_h.service.TaskLogService;
+import com.example.calendar_h.security.UserDetailsImpl;
+import com.example.calendar_h.service.TaskService;
 
 @Controller
 public class CalendarController {
-	private final TaskLogService taskLogService;
-	private final CategoryService categoryService;
 
-	public CalendarController(TaskLogService taskLogService, CategoryService categoryService) {
-		this.taskLogService = taskLogService;
-		this.categoryService = categoryService;
+	private final TaskService taskService;
+
+	public CalendarController(TaskService taskService) {
+		this.taskService = taskService;
 	}
 
 	@GetMapping("/calendar")
@@ -31,29 +30,28 @@ public class CalendarController {
 		return "calendar/index";
 	}
 
+	// タスクがある日をチェックする
 	@GetMapping("/calendar/taskdays")
 	@ResponseBody
-	public List<String> getTaskDays(@RequestParam(required = false) List<String> dates) {
-		if (dates == null || dates.isEmpty()) {
-			return List.of(); // nullや空配列なら空返す
-		}
+	public List<String> getTaskDays(
+			@AuthenticationPrincipal UserDetailsImpl principal,
+			@RequestParam(required = false) List<String> dates) {
+
+		if (dates == null || dates.isEmpty())
+			return List.of();
+
+		// ユーザーID取得
+		final Integer userId = principal.getUser().getId();
+
 		return dates.stream()
 				.filter(dateStr -> {
 					try {
 						LocalDate d = LocalDate.parse(dateStr);
-						return !taskLogService.getLogsByDate(d).isEmpty();
+						return taskService.hasTasksOnDate(userId, d);
 					} catch (DateTimeParseException e) {
 						return false;
 					}
 				})
 				.toList();
 	}
-
-	@GetMapping("/categoryList")
-	public String getCategoryList(Model model) {
-		List<Category> categoryList = categoryService.getAll();
-		model.addAttribute("categoryList", categoryList);
-		return "categoryList/index";
-	}
-
 }
