@@ -39,6 +39,8 @@
             					<td th:text="${totalCompletedDays}"></td>
             					<td th:text="${consecutiveCompletedDays}"></td>
             					<td>
+								<!-- 編集ボタン -->	
+								<a th:href="@{/tasks/edit/{id}(id=${task.id})}" class="btn btn-sm btn-primary">編集</a>
             					<!-- 削除ボタン -->
             					<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-task-id="${task.id}">削除</button>
         						</td>

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.calendar_h.entity.Task;
+import com.example.calendar_h.entity.User;
 import com.example.calendar_h.repository.TaskRepository;
 
 @Service
@@ -70,5 +71,27 @@ public class TaskService {
 	@Transactional
 	public void deleteTask(Task task) {
 		taskRepository.delete(task);
+	}
+
+	// タスク新規作成
+	@Transactional
+	public Task createTask(User user, String title, LocalDate logDate) {
+		Task t = new Task();
+
+		t.setUser(user);
+		t.setTitle(title);
+		t.setLogDate(logDate);
+		t.setStatus(false); // 新規は未完了で作成
+		return taskRepository.save(t);
+	}
+
+	// タスク更新
+	@Transactional
+	public void updateTask(Integer taskId, Integer userId, String title, LocalDate logDate) {
+		Task task = taskRepository.findByIdAndUser_Id(taskId, userId)
+				.orElseThrow(() -> new IllegalArgumentException("タスクが見つかりません"));
+		task.setTitle(title);
+		task.setLogDate(logDate);
+		taskRepository.save(task);
 	}
 }

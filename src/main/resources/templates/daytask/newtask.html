@@ -14,8 +14,8 @@
         <h6>直近のタスク</h6>
         <div class="recent-task-list">
             <div th:each="t : ${recentTasks}"
-                 th:classappend="'recent-task cat-' + ${t.task.categoryCode}">
-                <span th:text="${t.task.title}"></span>
+                 th:classappend="'recent-task cat-' + ${t.categoryCode}">
+                <span th:text="${t.title}"></span>
                 <div class="small">
                     <span th:text="${t.currentStreak + '日連続達成中'}"></span><br>
                     <span th:text="${'累計' + t.maxStreak + '日達成'}"></span>
@@ -24,8 +24,8 @@
         </div>
 
          <!-- 共通フォーム -->
-        <form th:object="${log}"
-              th:action="@{${editMode} ? '/logs/update' : '/logs/new'}"
+        <form th:object="${tasks}"
+              th:action="@{${editMode} ? '/tasks/update' : '/tasks/new'}"
               method="post">
 
             <!-- ID（更新時のみ必要） -->
@@ -38,7 +38,7 @@
             <!-- 日付選択 -->
             <div class="d-flex align-items-center my-3">
                 <button type="button" class="btn btn-outline-secondary btn-sm me-2">&lt;</button>
-                <input type="date" th:field="*{logDate}" class="form-control w-auto"/>
+                <input type="date" th:field="*{taskDate}" class="form-control w-auto"/>
                 <button type="button" class="btn btn-outline-secondary btn-sm ms-2">&gt;</button>
             </div>
 
@@ -46,80 +46,6 @@
             <div class="mb-3">
                 <label class="form-label">タスク</label>
                 <input type="text" th:field="*{task.title}" class="form-control" placeholder="タスク名を入力"/>
-            </div>
-
-            <!-- 繰り返し設定 -->
-            <div class="mb-3">
-                <label class="form-label">繰り返し</label><br>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" th:field="*{task.repeatType}" value="none">
-                    <label class="form-check-label">なし</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" th:field="*{task.repeatType}" value="repeat">
-                    <label class="form-check-label">あり</label>
-                </div>
-            </div>
-
-            <!-- 繰り返し詳細 -->
-            <div id="repeatOptions" th:if="${log.task != null and log.task.repeatType == 'repeat'}">
-                <div class="mb-2">
-                    <select th:field="*{task.repeatFrequency}" class="form-select w-auto">
-                        <option value="" disabled>選択してください</option>
-                        <option value="daily">毎日</option>
-                        <option value="weekly">毎週</option>
-                        <option value="monthly">毎月</option>
-                    </select>
-                </div>
-                
-                <!-- 毎週の場合 -->
-        		<div id="weeklyOption"
-                     th:if="${log.task.repeatFrequency == 'weekly'}">
-                    <label>曜日選択:</label><br>
-                    <div th:each="day : ${weekdays}">
-                        <input type="checkbox"
-                               name="task.repeatWeekdays"
-                               th:value="${day}"
-                               th:checked="${log.task.repeatWeekdays != null and log.task.repeatWeekdays.contains(day)}"/>
-                        <span th:text="${day}"></span>
-                    </div>
-                </div>
-
-
-        		<!-- 毎月の場合 -->
-        		<div id="monthlyOption"
-                     th:if="${log.task.repeatFrequency == 'monthly'}">
-                    <label>日付指定:</label>
-                    <input type="number" min="1" max="31"
-                           th:field="*{task.repeatMonthDay}" class="form-control w-auto d-inline-block"/>
-                </div>
-        	</div>
-                
-
-            <!-- カテゴリー選択 -->
-            <div class="mb-3">
-                <label class="form-label">カテゴリー</label>
-                <div class="category-grid">
-                    <div class="category-item" data-code="exercise">
-                        <img src="/img/exercise.png" alt="運動"><div class="category-name">運動</div>
-                    </div>
-                    <div class="category-item" data-code="hobby">
-                        <img src="/img/hobby.png" alt="趣味"><div class="category-name">趣味</div>
-                    </div>
-                    <div class="category-item" data-code="study">
-                        <img src="/img/study.png" alt="勉強"><div class="category-name">勉強</div>
-                    </div>
-                    <div class="category-item" data-code="work">
-                        <img src="/img/work.png" alt="仕事"><div class="category-name">仕事</div>
-                    </div>
-                    <div class="category-item" data-code="life">
-                        <img src="/img/life.png" alt="生活"><div class="category-name">生活</div>
-                    </div>
-                    <div class="category-item" data-code="rest">
-                        <img src="/img/rest.png" alt="休養"><div class="category-name">休養</div>
-                    </div>
-                </div>
-                <input type="hidden" name="categoryCode" id="selectedCategory" th:value="*{task.categoryCode}"/>
             </div>
 
             <!-- 保存 / 更新ボタン -->
@@ -133,29 +59,5 @@
 </div>
 
 <div th:replace="~{fragment :: scripts}"></div>
-<script>
-    // カテゴリー選択処理
-    document.querySelectorAll('.category-item').forEach(item => {
-        item.addEventListener('click', function(){
-            document.querySelectorAll('.category-item').forEach(c => c.classList.remove('selected'));
-            this.classList.add('selected');
-            document.getElementById('selectedCategory').value = this.dataset.code;
-        });
-    });
-
-    // 繰り返しオプション表示切替
-    document.querySelectorAll('input[name="repeatType"]').forEach(r => {
-        r.addEventListener('change', function(){
-            document.getElementById('repeatOptions').style.display =
-                this.value === 'repeat' ? 'block' : 'none';
-        });
-    });
-
-    // 頻度別オプション切替
-    document.querySelector('select[name="repeatFrequency"]').addEventListener('change', function(){
-        document.getElementById('weeklyOption').style.display = this.value === 'weekly' ? 'block' : 'none';
-        document.getElementById('monthlyOption').style.display = this.value === 'monthly' ? 'block' : 'none';
-    });
-</script>
 </body>
 </html>

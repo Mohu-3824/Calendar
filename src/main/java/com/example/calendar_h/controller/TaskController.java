@@ -15,18 +15,26 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.calendar_h.entity.Task;
+import com.example.calendar_h.entity.User;
+import com.example.calendar_h.form.TaskRegisterForm;
 import com.example.calendar_h.repository.UserRepository;
 import com.example.calendar_h.security.UserDetailsImpl;
 import com.example.calendar_h.service.TaskService;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/tasks")
@@ -102,5 +110,116 @@ public class TaskController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(Map.of("message", "タスクが見つかりませんでした。"));
 		}
+	}
+
+	// タスク新規作成
+	@GetMapping("/new")
+	@PreAuthorize("isAuthenticated()")
+	public String newTask(
+			@AuthenticationPrincipal UserDetailsImpl principal,
+			@RequestParam(name = "date", required = false) String dateStr,
+			Model model) {
+
+		// ログインチェック（既存方針に合わせる）
+		if (principal == null || principal.getUser() == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "ログインが必要です。");
+		}
+
+		TaskRegisterForm form = new TaskRegisterForm();
+
+		LocalDate date;
+		try {
+			date = (dateStr != null && !dateStr.isBlank())
+					? LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+					: LocalDate.now();
+		} catch (DateTimeParseException e) {
+			// フォーマットがおかしい場合は今日の日付にフォールバック
+			date = LocalDate.now();
+		}
+
+		form.setLogDate(date);
+
+		model.addAttribute("taskForm", form);
+		return "daytask/new";
+	}
+
+	// タスク登録処理
+	@PostMapping
+	@PreAuthorize("isAuthenticated()")
+	public String createTask(
+			@AuthenticationPrincipal UserDetailsImpl principal,
+			@Valid @ModelAttribute("taskForm") TaskRegisterForm form,
+			BindingResult bindingResult,
+			RedirectAttributes ra) {
+
+		if (principal == null || principal.getUser() == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "ログインが必要です。");
+		}
+
+		if (bindingResult.hasErrors()) {
+			return "daytask/new";
+		}
+
+		User user = principal.getUser();
+
+		try {
+			taskService.createTask(user, form.getTitle(), form.getLogDate());
+			ra.addFlashAttribute("successMessage", "タスクを登録しました。");
+		} catch (org.springframework.dao.DataIntegrityViolationException e) {
+			// (user_id, log_date, title) の UNIQUE 制約にひっかかった場合など
+			bindingResult.reject("", "同じタイトルのタスクが同じ日に既に存在します。");
+			return "daytask/new";
+		}
+
+		// 登録した日の一覧へ
+		return "redirect:/tasks/" + form.getLogDate().format(DF);
+	}
+
+	// タスク編集
+	@GetMapping("/edit/{id}")
+	@PreAuthorize("isAuthenticated()")
+	public String editTask(@PathVariable("id") Integer taskId,
+			@AuthenticationPrincipal UserDetailsImpl principal,
+			Model model) {
+		if (principal == null || principal.getUser() == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "ログインが必要です。");
+		}
+		Integer userId = principal.getUser().getId();
+
+		Task task = taskService.getTaskByIdAndUser(taskId, userId)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "タスクが見つかりません"));
+
+		TaskRegisterForm form = new TaskRegisterForm();
+		form.setTitle(task.getTitle());
+		form.setLogDate(task.getLogDate());
+
+		model.addAttribute("taskForm", form);
+		model.addAttribute("taskId", taskId); // 更新用に必要
+		model.addAttribute("isEdit", true); // 新規か編集かを判定するフラグ
+
+		return "daytask/new"; // 新規作成画面を再利用
+	}
+
+	// タスク更新処理
+	@PostMapping("/update/{id}")
+	@PreAuthorize("isAuthenticated()")
+	public String updateTask(@PathVariable("id") Integer taskId,
+			@AuthenticationPrincipal UserDetailsImpl principal,
+			@Valid @ModelAttribute("taskForm") TaskRegisterForm form,
+			BindingResult bindingResult,
+			RedirectAttributes ra) {
+		if (principal == null || principal.getUser() == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "ログインが必要です。");
+		}
+		if (bindingResult.hasErrors()) {
+			return "daytask/new";
+		}
+
+		Integer userId = principal.getUser().getId();
+
+		taskService.updateTask(taskId, userId, form.getTitle(), form.getLogDate());
+		ra.addFlashAttribute("successMessage", "タスクを更新しました。");
+
+		return "redirect:/tasks/" + form.getLogDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 	}
 }
