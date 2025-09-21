@@ -16,4 +16,7 @@ public class TaskRegisterForm {
 	@NotNull(message = "日付を入力してください")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate logDate;
+
+	@NotNull(message = "ステータスを選択してください。")
+	private Boolean status; // true = 完了, false = 未完了
 }

@@ -75,23 +75,33 @@ public class TaskService {
 
 	// タスク新規作成
 	@Transactional
-	public Task createTask(User user, String title, LocalDate logDate) {
+	public Task createTask(User user, String title, LocalDate logDate, Boolean status) {
 		Task t = new Task();
 
 		t.setUser(user);
 		t.setTitle(title);
 		t.setLogDate(logDate);
-		t.setStatus(false); // 新規は未完了で作成
+		t.setStatus(false);
 		return taskRepository.save(t);
 	}
 
 	// タスク更新
 	@Transactional
-	public void updateTask(Integer taskId, Integer userId, String title, LocalDate logDate) {
-		Task task = taskRepository.findByIdAndUser_Id(taskId, userId)
+	public void updateTask(Integer taskId, Integer userId, String title, LocalDate logDate, Boolean status) {
+		Task t = taskRepository.findByIdAndUser_Id(taskId, userId)
 				.orElseThrow(() -> new IllegalArgumentException("タスクが見つかりません"));
-		task.setTitle(title);
-		task.setLogDate(logDate);
-		taskRepository.save(task);
+		t.setTitle(title);
+		t.setLogDate(logDate);
+		t.setStatus(status != null ? status : false); // nullなら未完了にしておく
+		taskRepository.save(t);
+	}
+
+	// タスク完了
+	@Transactional
+	public void updateTaskStatus(Integer taskId, Integer userId, boolean status) {
+		Task t = taskRepository.findByIdAndUser_Id(taskId, userId)
+				.orElseThrow(() -> new IllegalArgumentException("タスクが見つかりません"));
+		t.setStatus(status);
+		taskRepository.save(t);
 	}
 }

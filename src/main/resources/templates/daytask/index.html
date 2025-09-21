@@ -19,25 +19,34 @@
 					
 					<h3 class="title">本日のタスク</h3>
 			       <!-- 未達成タスク -->
-					<h5 class="mt-4">★未達成</h5>					
+					<h5 class="mt-4">☆未達成</h5>					
 			        <div th:if="${#lists.isEmpty(tasks)}" class="text-muted small">タスクはありません</div>
 					<table border="1">
     					<thead>
         					<tr>
+								<th>ステータス</th>
 								<th>id</th>
             					<th>タイトル</th>
-            					<th>ステータス</th>
             					<th>累計達成日数</th>
-            					<th>連続達成日数</th>
+            					<th>>連続達成日数</th>
+            					<th>操作</th>
         					</tr>
     					</thead>
-    					<tbody>
-        					<tr th:each="task : ${incompleteTasks}" th:if="${task != null}">
+    					<tbody id="incompleteTbody">
+        					<tr th:each="task : ${incompleteTasks}" th:if="${task != null}" class="task-row" th:attr="data-task-id=${task.id}">
+								<td>
+									<!-- ✅ チェックボックスで完了切替 -->
+									<input type="checkbox"
+							       		th:value="${task.id}"
+							       		th:data-date="${date}"
+							       		th:data-title="${task.title}"
+							       		onchange="onTaskCheckboxChange(this)"/>
+									未完了
+								</td>								
 								<td th:text="${task.id}"></td>
-            					<td th:text="${task.title}"></td>
-            					<td th:text="'未完了'"></td>
-            					<td th:text="${totalCompletedDays}"></td>
-            					<td th:text="${consecutiveCompletedDays}"></td>
+								<td th:text="${task.title}"></td>
+								<td th:text="${totalCompletedDays}"></td>
+								<td th:text="${consecutiveCompletedDays}"></td>
             					<td>
 								<!-- 編集ボタン -->	
 								<a th:href="@{/tasks/edit/{id}(id=${task.id})}" class="btn btn-sm btn-primary">編集</a>
@@ -46,59 +55,163 @@
         						</td>
         					</tr>
     					</tbody>
-    					<!-- モーダル -->
-						<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    						<div class="modal-dialog" role="document">
-        						<div class="modal-content">
-            						<div class="modal-header">
-                						<h5 class="modal-title" id="deleteModalLabel">タスク削除確認</h5>
-                						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    						<span aria-hidden="true">&times;</span>
-                						</button>
-            						</div>
-            						<div class="modal-body">
-                						本当にタスクを削除してもよろしいですか？
-            						</div>
-            						<div class="modal-footer">
-                						<button type="button" class="btn btn-secondary" data-dismiss="modal">いいえ</button>
-                						<button type="button" class="btn btn-danger" id="confirmDelete">はい</button>
-            						</div>
-        						</div>
-    						</div>
-						</div>
 					</table>
+							
 					<!-- 達成済タスク -->
 					<h5 class="mt-4">★達成済</h5>
 					<table border="1">
     					<thead>
         					<tr>
+            					<th>ステータス</th>								
 								<th>id</th>
             					<th>タイトル</th>
-            					<th>ステータス</th>
             					<th>累計達成日数</th>
             					<th>連続達成日数</th>
+            					<th>操作</th>
         					</tr>
     					</thead>
-    					<tbody>
-        					<tr th:each="task : ${completeTasks}" th:if="${task != null}">
+    					<tbody id="completeTbody">
+        					<tr th:each="task : ${completeTasks}" th:if="${task != null}" class="task-row" th:attr="data-task-id=${task.id}">
+								<td>
+									<input type="checkbox"
+							       		th:value="${task.id}"
+							       		th:checked="true"
+							       		th:data-date="${date}"
+							       		th:data-title="${task.title}"
+							       		onchange="onTaskCheckboxChange(this)"/>
+									完了
+								</td>								
 								<td th:text="${task.id}"></td>
-            					<td th:text="${task.title}"></td>
-            					<td th:text="'完了'"></td>
-            					<td th:text="${totalCompletedDays}"></td>
-            					<td th:text="${consecutiveCompletedDays}"></td>
+								<td th:text="${task.title}"></td>
+								<td th:text="${totalCompletedDays}"></td>
+								<td th:text="${consecutiveCompletedDays}"></td>
+            					<td>
+								<!-- 編集ボタン -->	
+								<a th:href="@{/tasks/edit/{id}(id=${task.id})}" class="btn btn-sm btn-primary">編集</a>
+            					<!-- 削除ボタン -->
+            					<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-task-id="${task.id}">削除</button>
+        						</td>
         					</tr>
-    					</tbody>
+    					</tbody>   					
 					</table>
+					<div th:if="${successMessage}" class="alert alert-info">
+						<span th:text="${successMessage}"></span>
+					</div>
+					
+					<div th:if="${errorMessage}" class="alert alert-danger">
+						<span th:text="${errorMessage}"></span>
+					</div>					
     			</div>
 			</div>
 		</main>
 
     	<!-- 追加ボタン -->
     	<a th:href="@{/tasks/new(date=${date})}" class="floating-add-btn">+</a>
-
+    	
+		<div th:replace="~{fragment :: modal}"></div>
         <div th:replace="~{fragment :: footer}"></div>
-        <div th:replace="~{fragment :: scripts}"></div>
-        <script>
+        <div th:replace="~{fragment :: scripts}"></div>		        
+ 		<script>
+    		let toToggle = null; // { checkboxEl, taskId, title, date }
+
+    		// チェックボックス変更でモーダル表示
+    		function onTaskCheckboxChange(checkboxEl) {
+      		const isChecked = checkboxEl.checked;
+      		const taskId = checkboxEl.value;
+      		const date = checkboxEl.getAttribute('data-date');
+      		const title = checkboxEl.getAttribute('data-title');
+
+      		if (isChecked) {
+        		// 完了 → モーダル表示
+        		toToggle = { checkboxEl, taskId, date, title};
+        		document.getElementById('completeModalTaskTitle').textContent = `「${title}」`;
+        		const modal = new bootstrap.Modal(document.getElementById('completionModal'));
+        		modal.show();
+
+        		// 「いいえ」で元に戻す
+        		document.getElementById('btnCompleteNo').onclick = function() {
+          		checkboxEl.checked = false;
+          		toToggle = null;
+        		};
+
+        		// 「はい」でサーバ更新＆DOM移動
+        		document.getElementById('btnCompleteYes').onclick = function() {
+					const btn = this;
+  					btn.disabled = true; // 二重送信防止
+  					
+          			postToggle(toToggle.taskId, true, toToggle.date)
+            			.done(function() {
+              			moveRow(toToggle.taskId, true);
+              			showToast(`${toToggle.title} を達成済みに移動しました`);
+            		})
+            		.fail(function() {
+              			toToggle.checkboxEl.checked = false; // UIを元に戻す
+              			alert('ステータス更新に失敗しました');
+            		})
+            		.always(function() {
+      					btn.disabled = false;
+      					toToggle = null;
+    				});
+        		};
+      		} else {
+        		// 未完了 → そのまま更新
+        		postToggle(taskId, false, date)
+          		.done(function() {
+            		moveRow(taskId, false);
+            		showToast(`${title} を未達成に戻しました`);
+          		})
+          		.fail(function() {
+            		checkboxEl.checked = true;
+            		alert('ステータス更新に失敗しました');
+          		});
+      		}
+    		}
+			
+			// サーバーに完了状態を送信
+    		function postToggle(taskId, done, date) {
+			const csrfToken = $('meta[name="_csrf"]').attr('content');
+			const csrfHeaderName = $('meta[name="_csrf_header"]').attr('content');
+			
+			// トークンの値が正しく取れているか確認
+			console.log("CSRF Token:", csrfToken);  
+			console.log("CSRF Header Name:", csrfHeaderName);
+			
+			// Ajaxリクエスト
+      		return $.ajax({
+        		url: '/tasks/toggle',
+        		type: 'POST',
+        		data: { taskId: taskId, done: done, date: date },
+        		headers: { [csrfHeaderName]: csrfToken }
+      		});
+   		 }
+
+    		// 行を移動する
+    		function moveRow(taskId, toCompleted) {
+      		const $row = $(`tr.task-row[data-task-id="${taskId}"]`);
+      		if ($row.length === 0) return; // 念のためチェック
+      		
+      		const $checkbox = $row.find('input[type="checkbox"]');
+      		$checkbox.prop('checked', toCompleted);
+      		
+      		if (toCompleted) {
+        		$('#completeTbody').prepend($row);
+      		} else {
+        		$('#incompleteTbody').prepend($row);
+      		}
+    		}
+
+    		// トーストメッセージ
+    		function showToast(message) {
+      		const div = document.createElement('div');
+      		div.className = 'toast align-items-center text-white bg-dark position-fixed bottom-0 end-0 m-3 p-2';
+      		div.style.zIndex = 1056;
+      		div.textContent = message;
+      		document.body.appendChild(div);
+      		setTimeout(() => div.remove(), 2500);
+    		}
+
+			
+			// 削除モーダル用			
     		let taskIdToDelete = null;
 
     		// モーダルが表示される前にタスクIDを取得

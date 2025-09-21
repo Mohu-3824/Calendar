@@ -163,7 +163,7 @@ public class TaskController {
 		User user = principal.getUser();
 
 		try {
-			taskService.createTask(user, form.getTitle(), form.getLogDate());
+			taskService.createTask(user, form.getTitle(), form.getLogDate(), form.getStatus());
 			ra.addFlashAttribute("successMessage", "タスクを登録しました。");
 		} catch (org.springframework.dao.DataIntegrityViolationException e) {
 			// (user_id, log_date, title) の UNIQUE 制約にひっかかった場合など
@@ -217,9 +217,29 @@ public class TaskController {
 
 		Integer userId = principal.getUser().getId();
 
-		taskService.updateTask(taskId, userId, form.getTitle(), form.getLogDate());
+		taskService.updateTask(taskId, userId, form.getTitle(), form.getLogDate(), form.getStatus());
 		ra.addFlashAttribute("successMessage", "タスクを更新しました。");
 
 		return "redirect:/tasks/" + form.getLogDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	}
+
+	// タスク完了
+	@PostMapping("/toggle")
+	@PreAuthorize("isAuthenticated()")
+	@ResponseBody
+	public ResponseEntity<?> toggleTask(@AuthenticationPrincipal UserDetailsImpl principal,
+			@RequestParam("taskId") Integer taskId,
+			@RequestParam("done") boolean done,
+			@RequestParam("date") String dateStr) {
+		if (principal == null || principal.getUser() == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		Integer userId = principal.getUser().getId();
+
+		// タスクの完了状態を更新
+		taskService.updateTaskStatus(taskId, userId, done);
+
+		// 完了更新の結果を返す
+		return ResponseEntity.ok(Map.of("message", "ステータスを更新しました"));
 	}
 }

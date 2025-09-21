@@ -6,7 +6,7 @@
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1">
 			<meta name="_csrf" th:content="${_csrf.token}"/>
-			<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+			<meta name="_csrf_header" th:content="${_csrf.headerName}"/>			
 		</div>
 		
 		<!-- link要素の部品化 -->
@@ -72,6 +72,49 @@
 			</header>
 		</div>
 		
+		<!-- モーダルの部品化 -->
+		<div th:fragment="modal" th:remove="tag">
+			<!-- 完了確認モーダル -->
+			<div class="modal fade" id="completionModal" tabindex="-1" role="dialog" aria-labelledby="completionModalLabel" aria-hidden="true">
+    			<div class="modal-dialog" role="document">
+        			<div class="modal-content">
+            			<div class="modal-header">
+                			<h5 class="modal-title" id="completionModalLabel">タスクを完了してよろしいですか？</h5>
+                			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる">
+                    			<span aria-hidden="true">&times;</span>
+                			</button>
+            			</div>
+         				<div class="modal-body">
+          					<div id="completeModalTaskTitle" class="fw-bold"></div>
+        				</div>           		
+            			<div class="modal-footer">
+							<button type="button" class="btn btn-primary" id="btnCompleteYes">はい</button>
+                			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCompleteNo">いいえ</button>
+            			</div>
+        			</div>
+    			</div>
+			</div>
+    		<!-- 削除モーダル -->
+			<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    			<div class="modal-dialog" role="document">
+        			<div class="modal-content">
+            			<div class="modal-header">
+                			<h5 class="modal-title" id="deleteModalLabel">タスク削除確認</h5>
+                			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる">
+                    			<span aria-hidden="true">&times;</span>
+                			</button>
+            			</div>
+            			<div class="modal-body">
+                			本当にタスクを削除してもよろしいですか？
+            			</div>
+            			<div class="modal-footer">
+							<button type="button" class="btn btn-danger" id="confirmDelete">はい</button>
+                			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">いいえ</button>
+            			</div>
+        			</div>
+    			</div>
+			</div>
+		</div>		
 		<!-- フッターの部品化 -->
 		<div th:fragment="footer" th:remove="tag">
 			<footer>
@@ -86,6 +129,7 @@
 				<!-- Bootstrap -->
 				<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 				<script th:src="@{/js/calendar.js}"></script>
-			</div>	
+			</div>
+		</div>		
 	</body>
 </html>

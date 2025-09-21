@@ -17,16 +17,23 @@
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
         <div class="col-12 col-md-6">
-          <label class="form-label">日付</label>
-          <input type="date" th:field="*{logDate}" class="form-control"/>
-          <div class="text-danger small" th:errors="*{logDate}"></div>
+        	<label class="form-label">日付</label>
+        	<input type="date" th:field="*{logDate}" class="form-control"/>
+        	<div class="text-danger small" th:errors="*{logDate}"></div>
         </div>
         
         <div class="col-12">
-          <label class="form-label">タスク名</label>
-          <input type="text" th:field="*{title}" class="form-control" placeholder="例）読書"/>
-          <div class="text-danger small" th:errors="*{title}"></div>
+        	<label class="form-label">タスク名</label>
+        	<input type="text" th:field="*{title}" class="form-control" placeholder="例）読書"/>
+        	<div class="text-danger small" th:errors="*{title}"></div>
         </div>
+        
+        <div class="col-12">
+    		<label class="form-label">ステータス</label><br>
+    		<input type="radio" th:field="*{status}" value="false" /> 未完了
+    		<input type="radio" th:field="*{status}" value="true" class="ms-3"/> 完了
+    		<div class="text-danger small" th:errors="*{status}"></div>
+  		</div>
 
         <div class="col-12 mt-3">
           <button type="submit" class="btn btn-primary" th:text="${isEdit} ? '更新' : '登録'"></button>

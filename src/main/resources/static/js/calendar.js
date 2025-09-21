@@ -114,24 +114,30 @@ $(document).on("click", ".day-cell", function(){
        ✅ タスク完了トグル（リロードなし版）
     ====================== */  
     window.toggleTaskCompletion = function (taskId, isChecked, date, title) {
-        date = date.replace(/"/g, ''); // クオート除去
+        date = String(date || '').replace(/"/g, '');
 
-        $.post("/tasks/toggle", { taskId: taskId, done: isChecked, date: date })
-            .done(function () {
-                if (isChecked) {
-                    // メッセージ表示
-                    showFooterMessage(`${title} を達成済に移動しました。`);
-                    // DOMを未達成リストから達成済リストへ移動
-                    moveTaskBetweenLists(taskId, true);
-                } else {
-                    showFooterMessage(`${title} を未達成に戻しました。`);
-                    moveTaskBetweenLists(taskId, false);
-                }
-            })
-            .fail(function () {
-                alert("エラーが発生しました");
-            });
-    };
+    	const csrfToken = $('meta[name="_csrf"]').attr('content');
+    	const csrfHeaderName = $('meta[name="_csrf_header"]').attr('content');
+
+   		$.ajax({
+      		url: "/tasks/toggle",
+      		type: "POST",
+      		data: { taskId: taskId, done: isChecked, date: date },
+      		headers: csrfToken && csrfHeaderName ? { [csrfHeaderName]: csrfToken } : {}
+    	})
+    	.done(function () {
+      		if (isChecked) {
+        		showFooterMessage(`${title} を達成済に移動しました。`);
+        		moveTaskBetweenLists(taskId, true);
+      		} else {
+        		showFooterMessage(`${title} を未達成に戻しました。`);
+        		moveTaskBetweenLists(taskId, false);
+      		}
+    	})
+    	.fail(function () {
+      		alert("エラーが発生しました");
+    	});
+  	};
  
      /* ======================
        🔄 タスクDOMを移動させる関数
