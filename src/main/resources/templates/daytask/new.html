@@ -12,6 +12,18 @@
   <main>
     <div class="container pt-4 pb-5 edelweiss-container">
       <h3 class="title mb-4" th:text="${isEdit} ? 'タスク編集' : 'タスク新規作成'"></h3>
+      
+      <!-- 直近のタスク -->
+      <h6>直近のタスク</h6>
+      <div class="recent-task-list">
+          <div th:each="t : ${recentTasks}">
+              <span th:text="${t.title}"></span>
+              <div class="small">
+                  <span th:text="${t.currentStreak + '日連続達成中'}"></span><br>
+                  <span th:text="${'累計' + t.maxStreak + '日達成'}"></span>
+              </div>
+          </div>
+      </div>      
 
       <form th:action="${isEdit} ? @{'/tasks/update/' + ${taskId}} : @{/tasks}" th:object="${taskForm}" method="post" class="row g-3">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
@@ -30,8 +42,8 @@
         
         <div class="col-12">
     		<label class="form-label">ステータス</label><br>
-    		<input type="radio" th:field="*{status}" value="false" /> 未完了
-    		<input type="radio" th:field="*{status}" value="true" class="ms-3"/> 完了
+    		<input type="radio" th:field="*{status}" value="false" class="ms-3" /> 未完了
+    		<input type="radio" th:field="*{status}" value="true" class="ms-3" /> 完了
     		<div class="text-danger small" th:errors="*{status}"></div>
   		</div>
 

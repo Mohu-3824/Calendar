@@ -45,8 +45,8 @@
 								</td>								
 								<td th:text="${task.id}"></td>
 								<td th:text="${task.title}"></td>
-								<td th:text="${totalCompletedDays}"></td>
-								<td th:text="${consecutiveCompletedDays}"></td>
+								<td th:text="${task.totalCompletedDays}"></td>
+								<td th:text="${task.consecutiveCompletedDays}"></td>
             					<td>
 								<!-- 編集ボタン -->	
 								<a th:href="@{/tasks/edit/{id}(id=${task.id})}" class="btn btn-sm btn-primary">編集</a>
@@ -83,8 +83,8 @@
 								</td>								
 								<td th:text="${task.id}"></td>
 								<td th:text="${task.title}"></td>
-								<td th:text="${totalCompletedDays}"></td>
-								<td th:text="${consecutiveCompletedDays}"></td>
+								<td th:text="${task.totalCompletedDays}"></td>
+								<td th:text="${task.consecutiveCompletedDays}"></td>
             					<td>
 								<!-- 編集ボタン -->	
 								<a th:href="@{/tasks/edit/{id}(id=${task.id})}" class="btn btn-sm btn-primary">編集</a>
@@ -139,20 +139,21 @@
 					const btn = this;
   					btn.disabled = true; // 二重送信防止
   					
+  					// 完了状態をサーバーに送信
           			postToggle(toToggle.taskId, true, toToggle.date)
             			.done(function() {
-              			moveRow(toToggle.taskId, true);
-              			showToast(`${toToggle.title} を達成済みに移動しました`);
-            		})
-            		.fail(function() {
-              			toToggle.checkboxEl.checked = false; // UIを元に戻す
-              			alert('ステータス更新に失敗しました');
-            		})
-            		.always(function() {
-      					btn.disabled = false;
-      					toToggle = null;
-    				});
-        		};
+              			// 完了ステータスに変更されたタスクの状態でリダイレクト
+            			window.location.href = '/tasks/' + toToggle.date;  // タスクが完了した日付のページにリダイレクト
+        			})
+        			.fail(function() {
+            			toToggle.checkboxEl.checked = false; // UIを元に戻す
+            			alert('ステータス更新に失敗しました');
+        			})
+        			.always(function() {
+            			btn.disabled = false;
+            			toToggle = null;
+        			});
+				};
       		} else {
         		// 未完了 → そのまま更新
         		postToggle(taskId, false, date)
@@ -193,6 +194,7 @@
       		const $checkbox = $row.find('input[type="checkbox"]');
       		$checkbox.prop('checked', toCompleted);
       		
+      		// 完了タスクのtbodyに移動
       		if (toCompleted) {
         		$('#completeTbody').prepend($row);
       		} else {

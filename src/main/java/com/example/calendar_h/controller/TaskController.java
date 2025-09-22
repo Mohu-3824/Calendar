@@ -72,20 +72,24 @@ public class TaskController {
 		// タスク一覧を取得
 		List<Task> tasks = Optional.ofNullable(taskService.getTasksByUserAndDate(userId, logDate))
 				.orElse(Collections.emptyList());
+
 		// 完了タスクと未完了タスクを分ける
 		List<Task> completeTasks = tasks.stream().filter(task -> task.getStatus()).collect(Collectors.toList());
 		List<Task> incompleteTasks = tasks.stream().filter(task -> !task.getStatus()).collect(Collectors.toList());
 
-		// 累計達成日数と連続達成日数を取得
-		long totalCompletedDays = taskService.getTotalCompletedDays(userId);
-		long consecutiveCompletedDays = taskService.getConsecutiveCompletedDays(userId);
+		// 各タスクの累計達成日数と連続達成日数を取得
+		for (Task task : tasks) {
+			long totalCompletedDaysForTask = taskService.getTotalCompletedDaysForTask(userId, task.getTitle());
+			long consecutiveCompletedDaysForTask = taskService.getConsecutiveCompletedDaysForTask(userId,
+					task.getTitle());
 
+			task.setTotalCompletedDays(totalCompletedDaysForTask);
+			task.setConsecutiveCompletedDays(consecutiveCompletedDaysForTask);
+		}
 		// モデルにデータを追加
 		model.addAttribute("tasks", tasks);
 		model.addAttribute("completeTasks", completeTasks);
 		model.addAttribute("incompleteTasks", incompleteTasks);
-		model.addAttribute("totalCompletedDays", totalCompletedDays);
-		model.addAttribute("consecutiveCompletedDays", consecutiveCompletedDays);
 		model.addAttribute("date", logDate.format(DF)); // 表示用文字列
 		model.addAttribute("dateObj", logDate); // LocalDate型
 

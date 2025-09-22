@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 @Entity
@@ -40,4 +41,10 @@ public class Task {
 
 	@Column(name = "updated_at", insertable = false, updatable = false)
 	private Timestamp updatedAt;
+
+	@Transient // 一時的なフィールド
+	private long totalCompletedDays;
+
+	@Transient // 一時的なフィールド
+	private long consecutiveCompletedDays;
 }

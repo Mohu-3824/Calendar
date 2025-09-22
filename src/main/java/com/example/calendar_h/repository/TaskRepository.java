@@ -23,4 +23,10 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
 
 	// ユーザーIDとタスクIDに基づいてタスクを取得
 	Optional<Task> findByIdAndUser_Id(Integer id, Integer userId);
+
+	// 累計達成日数を取得するため、完了したタスクの日付のカウント
+	long countDistinctLogDateByUser_IdAndStatusAndTitle(Integer userId, boolean status, String title);
+
+	// 連続達成日数を取得するため、完了したタスクの日付一覧を取得
+	List<Task> findDistinctLogDateByUser_IdAndStatusAndTitle(Integer userId, boolean status, String title);
 }

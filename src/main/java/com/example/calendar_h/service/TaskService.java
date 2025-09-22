@@ -30,15 +30,16 @@ public class TaskService {
 		return taskRepository.existsByUser_IdAndLogDate(userId, date);
 	}
 
-	// 累計達成日数を取得
-	public long getTotalCompletedDays(Integer userId) {
-		return taskRepository.countDistinctLogDateByUser_IdAndStatus(userId, true);
+	// タスクごとの累計達成日数を取得
+	public long getTotalCompletedDaysForTask(Integer userId, String taskTitle) {
+		return taskRepository.countDistinctLogDateByUser_IdAndStatusAndTitle(userId, true, taskTitle);
 	}
 
-	// 連続達成日数を取得
-	public long getConsecutiveCompletedDays(Integer userId) {
+	// タスクごとの連続達成日数を取得
+	public long getConsecutiveCompletedDaysForTask(Integer userId, String taskTitle) {
 		// 完了したタスクの日付一覧を取得
-		List<Task> completedTasks = taskRepository.findDistinctLogDateByUser_IdAndStatus(userId, true);
+		List<Task> completedTasks = taskRepository.findDistinctLogDateByUser_IdAndStatusAndTitle(userId, true,
+				taskTitle);
 
 		// 日付順に並び替え
 		completedTasks.sort(Comparator.comparing(Task::getLogDate));
@@ -81,7 +82,7 @@ public class TaskService {
 		t.setUser(user);
 		t.setTitle(title);
 		t.setLogDate(logDate);
-		t.setStatus(false);
+		t.setStatus(status != null ? status : false);
 		return taskRepository.save(t);
 	}
 
