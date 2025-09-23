@@ -41,4 +41,7 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
 	List<Object[]> findCompletedTaskTitlesByUserAndDates(
 			@Param("userId") Integer userId,
 			@Param("dates") List<LocalDate> dates);
+
+	// ユーザーIDに基づいて直近のタスクを3件取得
+	List<Task> findTop50ByUser_IdOrderByLogDateDesc(Integer userId);
 }

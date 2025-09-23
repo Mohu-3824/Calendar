@@ -19,8 +19,8 @@
           <div th:each="t : ${recentTasks}">
               <span th:text="${t.title}"></span>
               <div class="small">
-                  <span th:text="${t.currentStreak + '日連続達成中'}"></span><br>
-                  <span th:text="${'累計' + t.maxStreak + '日達成'}"></span>
+                  <span th:text="${t.consecutiveCompletedDays + '日連続達成中'}"></span><br>
+                  <span th:text="${'累計' + t.totalCompletedDays + '日達成'}"></span>
               </div>
           </div>
       </div>      

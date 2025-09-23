@@ -144,6 +144,13 @@ public class TaskController {
 		form.setLogDate(date);
 
 		model.addAttribute("taskForm", form);
+		model.addAttribute("isEdit", false);
+
+		// ★直近3件取得して渡す
+		Integer userId = principal.getUser().getId();
+		List<Task> recentTasks = taskService.getRecentTasksByUser(userId);
+		model.addAttribute("recentTasks", recentTasks);
+
 		return "daytask/new";
 	}
 
@@ -200,6 +207,10 @@ public class TaskController {
 		model.addAttribute("taskForm", form);
 		model.addAttribute("taskId", taskId); // 更新用に必要
 		model.addAttribute("isEdit", true); // 新規か編集かを判定するフラグ
+
+		// ★直近3件も渡す
+		List<Task> recentTasks = taskService.getRecentTasksByUser(userId);
+		model.addAttribute("recentTasks", recentTasks);
 
 		return "daytask/new"; // 新規作成画面を再利用
 	}

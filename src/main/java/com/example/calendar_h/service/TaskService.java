@@ -4,9 +4,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -119,5 +121,33 @@ public class TaskService {
 			map.computeIfAbsent(date, k -> new ArrayList<>()).add(title);
 		}
 		return map;
+	}
+
+	// ログイン済みユーザーの直近3件のタスクを表示する
+	public List<Task> getRecentTasksByUser(Integer userId) {
+		// ユーザーのタスクを日付降順で取得（たくさん取ってから絞る）
+		List<Task> allTasks = taskRepository.findTop50ByUser_IdOrderByLogDateDesc(userId);
+		// タイトルの重複を排除しながら3件まで取り出す
+		List<Task> uniqueTasks = allTasks.stream()
+				.collect(Collectors.toMap(
+						Task::getTitle, // key: タイトル
+						t -> t, // value: タスク本体
+						(existing, replacement) -> existing, // 同じタイトルなら最初のものを残す
+						LinkedHashMap::new // 順序保持
+				))
+				.values()
+				.stream()
+				.limit(3) // 上位3件
+				.collect(Collectors.toList());
+
+		// 各タスクに累計・連続日数をセット
+		for (Task task : uniqueTasks) {
+			long total = getTotalCompletedDaysForTask(userId, task.getTitle());
+			long consecutive = getConsecutiveCompletedDaysForTask(userId, task.getTitle());
+			task.setTotalCompletedDays(total);
+			task.setConsecutiveCompletedDays(consecutive);
+		}
+
+		return uniqueTasks;
 	}
 }
