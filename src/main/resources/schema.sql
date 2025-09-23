@@ -19,14 +19,28 @@ CREATE TABLE IF NOT EXISTS verification_tokens (
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
+
+CREATE TABLE IF NOT EXISTS categories (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    category_name VARCHAR(50) NOT NULL,
+    icon_image VARCHAR(255), -- 画像ファイル名やパスを保存
+    color_code VARCHAR(7),   -- 例: #FF0000
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,   
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS tasks (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
+    category_id INT NULL,
     title VARCHAR(50) NOT NULL,
 	log_date DATE NOT NULL,
 	status BOOLEAN NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
     UNIQUE (user_id, log_date, title)
-);	
+);

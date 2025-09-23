@@ -19,4 +19,6 @@ public class TaskRegisterForm {
 
 	@NotNull(message = "ステータスを選択してください。")
 	private Boolean status; // true = 完了, false = 未完了
+
+	private Integer categoryId;
 }

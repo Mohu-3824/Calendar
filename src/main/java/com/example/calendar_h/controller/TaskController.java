@@ -27,11 +27,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.calendar_h.entity.Category;
 import com.example.calendar_h.entity.Task;
 import com.example.calendar_h.entity.User;
 import com.example.calendar_h.form.TaskRegisterForm;
 import com.example.calendar_h.repository.UserRepository;
 import com.example.calendar_h.security.UserDetailsImpl;
+import com.example.calendar_h.service.CategoryService;
 import com.example.calendar_h.service.TaskService;
 
 import jakarta.validation.Valid;
@@ -41,10 +43,12 @@ import jakarta.validation.Valid;
 public class TaskController {
 
 	private final TaskService taskService;
+	private final CategoryService categoryService;
 	private static final DateTimeFormatter DF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-	public TaskController(UserRepository userRepository, TaskService taskService) {
+	public TaskController(UserRepository userRepository, TaskService taskService, CategoryService categoryService) {
 		this.taskService = taskService;
+		this.categoryService = categoryService;
 	}
 
 	// 日ごとのタスク一覧を表示
@@ -146,10 +150,12 @@ public class TaskController {
 		model.addAttribute("taskForm", form);
 		model.addAttribute("isEdit", false);
 
-		// ★直近3件取得して渡す
+		// 直近3件取得して渡す
 		Integer userId = principal.getUser().getId();
-		List<Task> recentTasks = taskService.getRecentTasksByUser(userId);
-		model.addAttribute("recentTasks", recentTasks);
+		model.addAttribute("recentTasks", taskService.getRecentTasksByUser(userId));
+
+		// ★カテゴリー一覧
+		model.addAttribute("categories", categoryService.getByUserId(userId));
 
 		return "daytask/new";
 	}
@@ -161,21 +167,30 @@ public class TaskController {
 			@AuthenticationPrincipal UserDetailsImpl principal,
 			@Valid @ModelAttribute("taskForm") TaskRegisterForm form,
 			BindingResult bindingResult,
-			RedirectAttributes ra) {
+			RedirectAttributes ra,
+			Model model) {
 
 		if (principal == null || principal.getUser() == null) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "ログインが必要です。");
 		}
 
 		if (bindingResult.hasErrors()) {
+			// カテゴリー一覧再取得（エラー時再描画用）
+			List<Category> categories = categoryService.getByUserId(principal.getUser().getId());
+			model.addAttribute("categories", categories);
 			return "daytask/new";
 		}
 
 		User user = principal.getUser();
 
 		try {
-			taskService.createTask(user, form.getTitle(), form.getLogDate(), form.getStatus());
+			taskService.createTask(user, form.getTitle(), form.getLogDate(), form.getStatus(), form.getCategoryId());
 			ra.addFlashAttribute("successMessage", "タスクを登録しました。");
+		} catch (IllegalArgumentException e) {
+			bindingResult.reject("", e.getMessage());
+			List<Category> categories = categoryService.getByUserId(principal.getUser().getId());
+			model.addAttribute("categories", categories);
+			return "daytask/new";
 		} catch (org.springframework.dao.DataIntegrityViolationException e) {
 			// (user_id, log_date, title) の UNIQUE 制約にひっかかった場合など
 			bindingResult.reject("", "同じタイトルのタスクが同じ日に既に存在します。");
@@ -207,10 +222,10 @@ public class TaskController {
 		model.addAttribute("taskForm", form);
 		model.addAttribute("taskId", taskId); // 更新用に必要
 		model.addAttribute("isEdit", true); // 新規か編集かを判定するフラグ
+		model.addAttribute("recentTasks", taskService.getRecentTasksByUser(userId));
 
-		// ★直近3件も渡す
-		List<Task> recentTasks = taskService.getRecentTasksByUser(userId);
-		model.addAttribute("recentTasks", recentTasks);
+		// ★カテゴリー一覧
+		model.addAttribute("categories", categoryService.getByUserId(userId));
 
 		return "daytask/new"; // 新規作成画面を再利用
 	}
@@ -222,18 +237,35 @@ public class TaskController {
 			@AuthenticationPrincipal UserDetailsImpl principal,
 			@Valid @ModelAttribute("taskForm") TaskRegisterForm form,
 			BindingResult bindingResult,
-			RedirectAttributes ra) {
+			RedirectAttributes ra,
+			Model model) {
 		if (principal == null || principal.getUser() == null) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "ログインが必要です。");
-		}
-		if (bindingResult.hasErrors()) {
-			return "daytask/new";
 		}
 
 		Integer userId = principal.getUser().getId();
 
-		taskService.updateTask(taskId, userId, form.getTitle(), form.getLogDate(), form.getStatus());
-		ra.addFlashAttribute("successMessage", "タスクを更新しました。");
+		if (bindingResult.hasErrors()) {
+			List<Category> categories = categoryService.getByUserId(userId);
+			model.addAttribute("categories", categories);
+			model.addAttribute("isEdit", true);
+			model.addAttribute("taskId", taskId);
+			return "daytask/new";
+		}
+
+		try {
+			// ★安全版 TaskService 呼び出し（categoryId 付き）
+			taskService.updateTask(taskId, userId, form.getTitle(), form.getLogDate(), form.getStatus(),
+					form.getCategoryId());
+			ra.addFlashAttribute("successMessage", "タスクを更新しました。");
+		} catch (IllegalArgumentException e) {
+			bindingResult.reject("", e.getMessage());
+			List<Category> categories = categoryService.getByUserId(userId);
+			model.addAttribute("categories", categories);
+			model.addAttribute("isEdit", true);
+			model.addAttribute("taskId", taskId);
+			return "daytask/new";
+		}
 
 		return "redirect:/tasks/" + form.getLogDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 	}

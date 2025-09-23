@@ -27,6 +27,10 @@ public class Task {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
+	@ManyToOne
+	@JoinColumn(name = "category_id")
+	private Category category;
+
 	@Column(name = "title", nullable = false, length = 50)
 	private String title;
 

@@ -13,16 +13,33 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.calendar_h.entity.Category;
 import com.example.calendar_h.entity.Task;
 import com.example.calendar_h.entity.User;
+import com.example.calendar_h.repository.CategoryRepository;
 import com.example.calendar_h.repository.TaskRepository;
 
 @Service
 public class TaskService {
 	private final TaskRepository taskRepository;
+	private final CategoryRepository categoryRepository;
 
-	public TaskService(TaskRepository taskRepository) {
+	public TaskService(TaskRepository taskRepository, CategoryRepository categoryRepository) {
 		this.taskRepository = taskRepository;
+		this.categoryRepository = categoryRepository;
+	}
+
+	/**
+	 * カテゴリーの所有者がユーザーと一致するか検証し、エンティティを返す。
+	 * @param categoryId カテゴリーID（null可）
+	 * @param userId ログインユーザーID
+	 */
+	private Category validateAndGetCategory(Integer categoryId, Integer userId) {
+		if (categoryId == null) {
+			return null; // カテゴリー未選択
+		}
+		return categoryRepository.findByIdAndUser_Id(categoryId, userId)
+				.orElseThrow(() -> new IllegalArgumentException("不正なカテゴリーが指定されました"));
 	}
 
 	// ユーザーIDと日付に基づいてタスクを取得
@@ -81,24 +98,35 @@ public class TaskService {
 
 	// タスク新規作成
 	@Transactional
-	public Task createTask(User user, String title, LocalDate logDate, Boolean status) {
+	public Task createTask(User user, String title, LocalDate logDate, Boolean status, Integer categoryId) {
 		Task t = new Task();
 
 		t.setUser(user);
 		t.setTitle(title);
 		t.setLogDate(logDate);
 		t.setStatus(status != null ? status : false);
+
+		// 所有チェック付きカテゴリーセット
+		Category category = validateAndGetCategory(categoryId, user.getId());
+		t.setCategory(category);
+
 		return taskRepository.save(t);
 	}
 
 	// タスク更新
 	@Transactional
-	public void updateTask(Integer taskId, Integer userId, String title, LocalDate logDate, Boolean status) {
+	public void updateTask(Integer taskId, Integer userId, String title, LocalDate logDate, Boolean status,
+			Integer categoryId) {
 		Task t = taskRepository.findByIdAndUser_Id(taskId, userId)
 				.orElseThrow(() -> new IllegalArgumentException("タスクが見つかりません"));
 		t.setTitle(title);
 		t.setLogDate(logDate);
 		t.setStatus(status != null ? status : false); // nullなら未完了にしておく
+
+		// 所有チェック付きカテゴリーセット
+		Category category = validateAndGetCategory(categoryId, userId);
+		t.setCategory(category);
+
 		taskRepository.save(t);
 	}
 
