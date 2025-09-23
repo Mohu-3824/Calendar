@@ -155,18 +155,37 @@
         			});
 				};
       		} else {
-        		// 未完了 → そのまま更新
-        		postToggle(taskId, false, date)
-          		.done(function() {
-            		moveRow(taskId, false);
-            		showToast(`${title} を未達成に戻しました`);
-          		})
-          		.fail(function() {
+        		// 未完了 → モーダル表示
+        		toToggle = { checkboxEl, taskId, date, title };
+        		document.getElementById('incompleteModalTaskTitle').textContent = `「${title}」`;
+        		const modal = new bootstrap.Modal(document.getElementById('incompletionModal'));
+        		modal.show();
+
+        		// 「いいえ」で元に戻す
+        		document.getElementById('btnIncompleteNo').onclick = function () {
             		checkboxEl.checked = true;
-            		alert('ステータス更新に失敗しました');
-          		});
-      		}
-    		}
+            		toToggle = null;
+        		};
+
+        		// 「はい」でサーバ更新＆行移動 or リダイレクト
+        		document.getElementById('btnIncompleteYes').onclick = function () {
+            		const btn = this;
+            		btn.disabled = true;
+            		postToggle(toToggle.taskId, false, toToggle.date)
+                		.done(function () {
+                    		window.location.href = '/tasks/' + toToggle.date; // 累計・連続日数再計算
+                		})
+                		.fail(function () {
+                    		toToggle.checkboxEl.checked = true;
+                    		alert('ステータス更新に失敗しました');
+                		})
+                		.always(function () {
+                    		btn.disabled = false;
+                    		toToggle = null;
+                		});
+        			};
+    			}
+			}
 			
 			// サーバーに完了状態を送信
     		function postToggle(taskId, done, date) {
@@ -192,7 +211,7 @@
       		if ($row.length === 0) return; // 念のためチェック
       		
       		const $checkbox = $row.find('input[type="checkbox"]');
-      		$checkbox.prop('checked', toCompleted);
+      		$checkbox.prop('checked', toCompleted);	
       		
       		// 完了タスクのtbodyに移動
       		if (toCompleted) {

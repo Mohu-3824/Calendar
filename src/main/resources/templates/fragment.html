@@ -114,6 +114,24 @@
         			</div>
     			</div>
 			</div>
+			<!-- 未完了戻し確認モーダル -->
+			<div class="modal fade" id="incompletionModal" tabindex="-1" role="dialog" aria-labelledby="incompletionModalLabel" aria-hidden="true">
+  				<div class="modal-dialog" role="document">
+    				<div class="modal-content">
+      					<div class="modal-header">
+        					<h5 class="modal-title" id="incompletionModalLabel">タスクを未完了にしてよろしいですか？</h5>
+        					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+      					</div>
+      					<div class="modal-body">
+        					<div id="incompleteModalTaskTitle" class="fw-bold"></div>
+      					</div>
+      					<div class="modal-footer">
+        					<button type="button" class="btn btn-primary" id="btnIncompleteYes">はい</button>
+        					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnIncompleteNo">いいえ</button>
+      					</div>
+    				</div>
+  				</div>
+			</div>
 		</div>		
 		<!-- フッターの部品化 -->
 		<div th:fragment="footer" th:remove="tag">
