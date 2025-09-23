@@ -53,7 +53,8 @@ $(function() {
     // ✅ API送信前に日付形式をチェック（YYYY-MM-DDのみ通す）
     const validDates = dates.filter(dateStr => /^\d{4}-\d{2}-\d{2}$/.test(dateStr));
     	if (validDates.length > 0) {
-        	markTaskDays(validDates);
+        	markTaskDays(validDates);               // タスク有日ハイライト
+        	fetchCompletedTaskTitles(validDates);   // 達成済タスク一覧取得＆表示
         }
     } 
 
@@ -80,6 +81,46 @@ $(function() {
             }
         });
     }
+    
+    /* ======================
+       🏆 達成済みタスク名取得
+    ====================== */
+    function fetchCompletedTaskTitles(dateList) {
+        if (!Array.isArray(dateList) || dateList.length === 0) return;
+
+        const csrfToken = $('meta[name="_csrf"]').attr('content');
+        const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+
+        $.ajax({
+            url: "/calendar/completed-tasktitles",
+            method: "GET",
+            data: { dates: dateList },
+            traditional: true,
+            headers: csrfToken && csrfHeader ? { [csrfHeader]: csrfToken } : {},
+            success: function (completedMap) {
+                // completedMap = { "2025-09-02": ["掃除", "勉強"], ... }
+                for (const dateStr in completedMap) {
+                    const $cell = $(`.day-cell[data-date="${dateStr}"]`);
+                    $cell.addClass("has-task");
+                    
+                    // 既存の.task-listを一旦削除
+        			$cell.find(".task-list").remove();
+        			
+                    const titles = completedMap[dateStr];
+                    if (titles.length > 0) {
+                        const taskListHtml = titles
+                            .map(t => `<div class="task-title">${t}</div>`)
+                            .join("");
+                        $cell.append(`<div class="task-list">${taskListHtml}</div>`);
+                    }
+                }
+            },
+            error: function () {
+                console.error("達成済みタスク取得エラー");
+            }
+        });
+    }
+
 
   // 初期表示
   renderCalendar(currentYear, currentMonth);
@@ -93,6 +134,7 @@ $(document).on("click", ".day-cell", function(){
   const date = $(this).data("date"); // "yyyy-MM-dd"
   if (date) window.location.href = `/tasks/${date}`; 
   });
+
 
     /* ======================
        📌 ドロップダウン ホバー表示

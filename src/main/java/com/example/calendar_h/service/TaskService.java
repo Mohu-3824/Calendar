@@ -1,8 +1,11 @@
 package com.example.calendar_h.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -104,5 +107,17 @@ public class TaskService {
 				.orElseThrow(() -> new IllegalArgumentException("タスクが見つかりません"));
 		t.setStatus(status);
 		taskRepository.save(t);
+	}
+
+	// 指定した日付の達成済みタスク名一覧を取得
+	public Map<LocalDate, List<String>> getCompletedTaskTitlesByDates(Integer userId, List<LocalDate> dates) {
+		List<Object[]> result = taskRepository.findCompletedTaskTitlesByUserAndDates(userId, dates);
+		Map<LocalDate, List<String>> map = new HashMap<>();
+		for (Object[] row : result) {
+			LocalDate date = (LocalDate) row[0];
+			String title = (String) row[1];
+			map.computeIfAbsent(date, k -> new ArrayList<>()).add(title);
+		}
+		return map;
 	}
 }

@@ -286,9 +286,18 @@ footer {
 .day-cell { 
 	background:#fff; 
 	border:1px solid #ddd; 
+	display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 	min-height:80px; 
 	padding:5px; 
 	border-radius:8px; 
+}
+
+.day-cell .task-list {
+    margin-top: 4px;
+    font-size: 10px;
+    color: green;
 }
 
 .day-cell.today { 
@@ -407,9 +416,16 @@ footer {
 	align-items: center;
 	}
 	
+.task-list {
+    font-size: 0.8em;
+    margin-top: 4px;
+}	
+	
 .task-title {
-	font-weight: 500;
-	margin-left: 8px;
+    background-color: #eef;
+    padding: 2px 4px;
+    margin-bottom: 2px;
+    border-radius: 4px;
 }
 
 .streak-text {
