@@ -116,6 +116,10 @@
 					
 					<div th:if="${errorMessage}" class="alert alert-danger">
 						<span th:text="${errorMessage}"></span>
+					</div>
+					<!-- 戻るボタン -->
+					<div class="text-center mt-3">
+    					<a th:href="@{/calendar}" class="btn btn-outline-secondary ms-2">カレンダーへ戻る</a>
 					</div>					
     			</div>
 			</div>
@@ -123,6 +127,8 @@
 
     	<!-- 追加ボタン -->
     	<a th:href="@{/tasks/new(date=${date})}" class="floating-add-btn">+</a>
+    	
+
     	
 		<div th:replace="~{fragment :: modal}"></div>
         <div th:replace="~{fragment :: footer}"></div>
