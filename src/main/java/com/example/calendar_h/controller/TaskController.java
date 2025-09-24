@@ -218,6 +218,8 @@ public class TaskController {
 		TaskRegisterForm form = new TaskRegisterForm();
 		form.setTitle(task.getTitle());
 		form.setLogDate(task.getLogDate());
+		form.setStatus(task.getStatus());
+		form.setCategoryId(task.getCategory() != null ? task.getCategory().getId() : null);
 
 		model.addAttribute("taskForm", form);
 		model.addAttribute("taskId", taskId); // 更新用に必要

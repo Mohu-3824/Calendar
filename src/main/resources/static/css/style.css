@@ -358,6 +358,14 @@ footer {
 	border-radius:8px;
 }
 
+
+.streak { 
+	font-size: 0.8em; 
+	color: red; 
+	margin-left: 8px; 
+}
+
+/* カテゴリ色 */
 .cat-study { 
 	background-color: #ff99ff; 
 	padding: 2px 6px; 
@@ -376,24 +384,12 @@ footer {
 	border-radius: 4px; 
 }
 
-.streak { 
-	font-size: 0.8em; 
-	color: red; 
-	margin-left: 8px; 
+.cat-exercise { 
+	background-color: #fbc02d; 
+	padding: 2px 6px; 
+	border-radius: 4px;
 }
 
-/* カテゴリ色 */
-.cat-study { 
-	background-color: #f0d9ff; 
-}
-
-.cat-hobby { 
-	background-color: #d1f7c4; 
-}
-
-.cat-beauty { 
-	background-color: #ffe6a7; 
-}
 .category-label {
 	display: inline-block;
 	padding: 2px 8px;
@@ -514,18 +510,6 @@ footer {
 	display: inline-block;
 }
 
-.cat-hobby { 
-	background-color: #4CAF50; 
-}
-
-.cat-study { 
-	background-color: #f06292; 
-}
-
-.cat-exercise { 
-	background-color: #fbc02d; 
-}
-
 /* カテゴリー選択ボタン */
 .category-grid {
 	display: grid;
@@ -541,16 +525,18 @@ footer {
 	text-align: center;
 	cursor: pointer;
 	transition: border 0.3s, background-color 0.3s;
+	cursor: pointer;
+	user-select: none;
 }
 
 .category-item.selected {
-	border-color: #007bff;
-	background-color: #eaf5ff;
+	border: 3px solid #000;
 }
 
 .category-item img {
 	width: 50px;
 	height: 50px;
+	pointer-events: none;
 }
 
 .category-name {

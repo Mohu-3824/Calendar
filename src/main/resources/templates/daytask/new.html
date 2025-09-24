@@ -50,19 +50,19 @@
   		<div class="col-12">
     		<label class="form-label">カテゴリー</label>
     		<div class="category-list d-flex flex-wrap">
-        		<div th:each="cat : ${categories}" 
-             		class="category-item m-2 p-2 text-center"
-             		th:style="'background-color:' + ${cat.colorCode}"
-             		th:onclick="|selectCategory(${cat.id})|"
-             		style="cursor:pointer; width:100px; height:100px; border-radius:8px;">
-             
-            	<img th:if="${cat.iconImage != null}" 
-                 	th:src="@{'/images/categories/' + ${cat.iconImage}}" 
-                 	alt="icon" style="width:40px; height:40px;">
-            		<div th:text="${cat.categoryName}"></div>
-        		</div>
-    		</div>
-    		<input type="hidden" th:field="*{categoryId}" id="categoryId">
+  				<div th:each="cat : ${categories}" 
+       				class="category-item m-2 p-2 text-center"
+       				th:attr="data-category-id=${cat.id}"
+       				th:style="'background-color:' + ${cat.colorCode}"
+       				style="cursor:pointer; width:100px; height:100px; border-radius:8px;">
+       
+    				<img th:if="${cat.iconImage != null}" 
+         			th:src="@{'/images/categories/' + ${cat.iconImage}}" 
+         			alt="icon" style="width:40px; height:40px;">
+    				<div th:text="${cat.categoryName}"></div>
+  				</div>
+			</div>
+			<input type="hidden" th:field="*{categoryId}" id="categoryId">
 		</div>
 
         <div class="col-12 mt-3">

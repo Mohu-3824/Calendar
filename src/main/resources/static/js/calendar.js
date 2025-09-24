@@ -194,18 +194,29 @@ $(document).on("click", ".day-cell", function(){
         // チェックボックス状態を即反映
         task.find('input[type="checkbox"]').prop('checked', toCompleted);
     }
+		
+	// ======================
+	// 🔄 タスク新規作成・編集画面：カテゴリー選択処理
+	// ======================
+	const hiddenField = document.getElementById("categoryId");
+	if (hiddenField) {
+  		const items = document.querySelectorAll(".category-item");
+  		items.forEach(item => {
+    		item.addEventListener("click", function () {
+      		const categoryId = this.getAttribute("data-category-id");
+      		hiddenField.value = categoryId;
+      		items.forEach(el => el.classList.remove("selected"));
+      		this.classList.add("selected");
+    	});
+  	});
 
-     /* ======================
-       🔄 タスク新規作成画面にカテゴリーを追加
-    ====================== */
-        
-    function selectCategory(categoryId) {
-    document.getElementById('categoryId').value = categoryId;
-    // 選択したボタンに枠線を付けるなど視覚的フィードバック
-    document.querySelectorAll('.category-item').forEach(item => {
-        item.style.border = '';
-    });
-    event.currentTarget.style.border = '3px solid #000';
+  	const currentCategoryId = hiddenField.value;
+  	if (currentCategoryId) {
+    	const selectedItem = document.querySelector(
+      `	.category-item[data-category-id="${currentCategoryId}"]`
+    	);
+    	if (selectedItem) selectedItem.classList.add("selected");
+  	}
 	}
     
     /* ======================

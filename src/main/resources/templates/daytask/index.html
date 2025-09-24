@@ -27,6 +27,7 @@
 								<th>ステータス</th>
 								<th>id</th>
             					<th>タイトル</th>
+            					<th>カテゴリー</th>
             					<th>累計達成日数</th>
             					<th>>連続達成日数</th>
             					<th>操作</th>
@@ -45,6 +46,13 @@
 								</td>								
 								<td th:text="${task.id}"></td>
 								<td th:text="${task.title}"></td>
+								<td>
+        							<span th:if="${task.category != null}"
+              							th:text="${task.category.categoryName}"
+              							th:style="'background-color:' + ${task.category.colorCode} + ';color:#000; padding:3px 6px; border-radius:5px;'">
+        							</span>
+        							<span th:if="${task.category == null}">なし</span>
+    							</td>
 								<td th:text="${task.totalCompletedDays}"></td>
 								<td th:text="${task.consecutiveCompletedDays}"></td>
             					<td>
@@ -65,6 +73,7 @@
             					<th>ステータス</th>								
 								<th>id</th>
             					<th>タイトル</th>
+            					<th>カテゴリー</th>
             					<th>累計達成日数</th>
             					<th>連続達成日数</th>
             					<th>操作</th>
@@ -83,6 +92,13 @@
 								</td>								
 								<td th:text="${task.id}"></td>
 								<td th:text="${task.title}"></td>
+								<td>
+        							<span th:if="${task.category != null}"
+              							th:text="${task.category.categoryName}"
+              							th:style="'background-color:' + ${task.category.colorCode} + ';color:#000; padding:3px 6px; border-radius:5px;'">
+        							</span>
+        							<span th:if="${task.category == null}">なし</span>
+    							</td>
 								<td th:text="${task.totalCompletedDays}"></td>
 								<td th:text="${task.consecutiveCompletedDays}"></td>
             					<td>

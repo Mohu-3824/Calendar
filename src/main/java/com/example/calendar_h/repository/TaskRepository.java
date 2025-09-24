@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,6 +13,8 @@ import com.example.calendar_h.entity.Task;
 
 public interface TaskRepository extends JpaRepository<Task, Integer> {
 	// 特定ユーザー・特定日付のタスク一覧を取得
+	// カテゴリーも一緒に取得（N+1対策用、省略可能）
+	@EntityGraph(attributePaths = {"category"})
 	List<Task> findDistinctByUser_IdAndLogDate(Integer userId, LocalDate logDate);
 
 	// 存在チェック用（高速 & 件数不要）
