@@ -33,12 +33,27 @@
                         <span class="color-box" th:style="'background-color:' + ${category.colorCode}"></span>
                     </td>
                     <td>
-                        <button class="btn-edit">編集</button>
-                        <button class="btn-delete">削除</button>
+                		<!-- 編集ボタン（別画面予定ならリンクにする） -->
+                		<a th:href="@{'/categories/edit/' + ${category.id}}" 
+                   			class="btn btn-sm btn-edit btn-primary">編集</a>
+
+                		<!-- 削除ボタン（フォーム方式で確実に動作） -->
+                		<form th:action="@{'/categories/delete/' + ${category.id}}" 
+                      		method="post" style="display:inline;">
+                    		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    		<button type="submit" 
+                            	class="btn btn-sm btn-danger btn-delete"
+                           		onclick="return confirm('本当にこのカテゴリーを削除しますか？');">
+                        		削除
+                   			</button>
+               	 		</form>
                     </td>
                 </tr>
             </tbody>
         </table>
+        <!-- フラッシュメッセージを埋め込み -->
+		<div id="flash-success" th:if="${successMessage}" th:text="${successMessage}" style="display:none;"></div>
+		<div id="flash-error" th:if="${errorMessage}" th:text="${errorMessage}" style="display:none;"></div>
 
         <!-- 戻るボタン -->
         <div class="center-btn">

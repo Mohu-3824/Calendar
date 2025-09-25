@@ -217,7 +217,7 @@ $(document).on("click", ".day-cell", function(){
     	);
     	if (selectedItem) selectedItem.classList.add("selected");
   	}
-	}
+	}   
     
     /* ======================
        💬 下部メッセージ表示

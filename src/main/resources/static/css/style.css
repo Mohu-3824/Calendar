@@ -634,8 +634,28 @@ header {
     cursor: pointer;
 }
 
+
+/* カテゴリー編集画面 */
+.icon-item.selected {
+	 border:2px solid #000;
+	  border-radius:8px; 
+}
+
+.color-swatch {
+    border: 2px solid #ddd;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.color-swatch.selected {
+    border: 3px solid #007bff;
+    box-shadow: 0 0 5px rgba(0,123,255,0.6); 
+}
+
 @media screen and (min-width: 1400px) {
- .samuraitravel-container {
+ .edelweiss-container {
    max-width: 1200px;
  }
 }
