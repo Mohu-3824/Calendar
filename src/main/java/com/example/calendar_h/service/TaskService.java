@@ -140,13 +140,20 @@ public class TaskService {
 	}
 
 	// 指定した日付の達成済みタスク名一覧を取得
-	public Map<LocalDate, List<String>> getCompletedTaskTitlesByDates(Integer userId, List<LocalDate> dates) {
-		List<Object[]> result = taskRepository.findCompletedTaskTitlesByUserAndDates(userId, dates);
-		Map<LocalDate, List<String>> map = new HashMap<>();
-		for (Object[] row : result) {
-			LocalDate date = (LocalDate) row[0];
-			String title = (String) row[1];
-			map.computeIfAbsent(date, k -> new ArrayList<>()).add(title);
+	public Map<LocalDate, List<Map<String, String>>> 
+		getCompletedTasksWithColors(Integer userId, List<LocalDate> dates) {
+		List<Object[]> result = taskRepository.findCompletedTaskTitlesWithColorsByUserAndDates(userId, dates);
+		Map<LocalDate, List<Map<String, String>>> map = new HashMap<>();
+	    for (Object[] row : result) {
+	        LocalDate date = (LocalDate) row[0];
+	        String title = (String) row[1];
+	        String colorCode = (String) row[2];
+	        
+	        Map<String, String> taskInfo = new HashMap<>();
+	        taskInfo.put("title", title);
+	        taskInfo.put("color", colorCode != null ? colorCode : "#ddd");
+
+	        map.computeIfAbsent(date, k -> new ArrayList<>()).add(taskInfo);
 		}
 		return map;
 	}

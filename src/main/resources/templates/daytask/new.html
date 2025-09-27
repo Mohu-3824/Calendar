@@ -11,7 +11,7 @@
 
   <main>
     <div class="container pt-4 pb-5 edelweiss-container">
-      <h3 class="title mb-4" th:text="${isEdit} ? 'タスク編集' : 'タスク新規作成'"></h3>
+      <h3 class="title text-center mb-4" th:text="${isEdit} ? 'タスク編集' : 'タスク新規作成'"></h3>
       
       <!-- 直近のタスク -->
       <h6>直近のタスク</h6>
@@ -65,7 +65,7 @@
 			<input type="hidden" th:field="*{categoryId}" id="categoryId">
 		</div>
 
-        <div class="col-12 mt-3">
+        <div class="col-12 text-center mt-3">
           <button type="submit" class="btn btn-primary" th:text="${isEdit} ? '更新' : '登録'"></button>
     		<a th:href="@{'/tasks/' + ${taskForm.logDate}}" class="btn btn-outline-secondary ms-2">戻る</a>
   		</div>

@@ -21,95 +21,94 @@
 			       <!-- 未達成タスク -->
 					<h5 class="mt-4">☆未達成</h5>					
 			        <div th:if="${#lists.isEmpty(tasks)}" class="text-muted small">タスクはありません</div>
-					<table border="1">
-    					<thead>
-        					<tr>
-								<th>ステータス</th>
-								<th>id</th>
-            					<th>タイトル</th>
-            					<th>カテゴリー</th>
-            					<th>累計達成日数</th>
-            					<th>>連続達成日数</th>
-            					<th>操作</th>
-        					</tr>
-    					</thead>
-    					<tbody id="incompleteTbody">
-        					<tr th:each="task : ${incompleteTasks}" th:if="${task != null}" class="task-row" th:attr="data-task-id=${task.id}">
-								<td>
-									<!-- ✅ チェックボックスで完了切替 -->
-									<input type="checkbox"
-							       		th:value="${task.id}"
-							       		th:data-date="${date}"
-							       		th:data-title="${task.title}"
-							       		onchange="onTaskCheckboxChange(this)"/>
-									未完了
-								</td>								
-								<td th:text="${task.id}"></td>
-								<td th:text="${task.title}"></td>
-								<td>
-        							<span th:if="${task.category != null}"
-              							th:text="${task.category.categoryName}"
-              							th:style="'background-color:' + ${task.category.colorCode} + ';color:#000; padding:3px 6px; border-radius:5px;'">
-        							</span>
-        							<span th:if="${task.category == null}">なし</span>
-    							</td>
-								<td th:text="${task.totalCompletedDays}"></td>
-								<td th:text="${task.consecutiveCompletedDays}"></td>
-            					<td>
-								<!-- 編集ボタン -->	
-								<a th:href="@{/tasks/edit/{id}(id=${task.id})}" class="btn btn-sm btn-primary">編集</a>
-            					<!-- 削除ボタン -->
-            					<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-task-id="${task.id}">削除</button>
-        						</td>
-        					</tr>
-    					</tbody>
-					</table>
-							
-					<!-- 達成済タスク -->
+					<div id="incompleteList">
+    					<div th:each="task : ${incompleteTasks}" th:if="${task != null}" 
+         					class="task-item" th:attr="data-task-id=${task.id}">
+
+        					<!-- チェックボックス -->
+        					<div class="task-check">
+            					<input type="checkbox"
+                   					th:value="${task.id}"
+                   					th:data-date="${date}"
+                   					th:data-title="${task.title}"
+                   					onchange="onTaskCheckboxChange(this)" />
+        					</div>
+
+        					<!-- タスク内容 -->
+        					<div class="task-content">
+            					<span class="task-title" th:text="${task.title}"></span>
+            					<span class="category-label"
+                  					th:if="${task.category != null}"
+                  					th:text="${task.category.categoryName}"
+                  					th:style="'background-color:' + ${task.category.colorCode} +
+                            					';color:#000;padding:2px 6px;border-radius:4px;'">
+            					</span>
+        					</div>
+
+        					<!-- 達成日数 -->
+        					<div class="streak-text">
+            					<span th:text="'連続' + ${task.consecutiveCompletedDays} + '日達成'"></span>
+            					<br/>
+            					<span th:text="'累計' + ${task.totalCompletedDays} + '日達成'"></span>
+        					</div>
+
+        					<!-- 操作ボタン -->
+        					<div>
+            					<a th:href="@{/tasks/edit/{id}(id=${task.id})}" 
+               					class="btn-edit">編集</a>
+            					<button type="button" class="btn-delete"
+                    					data-bs-toggle="modal" 
+                    					data-bs-target="#deleteModal"
+                    					th:data-task-id="${task.id}">削除</button>
+        					</div>
+    					</div>
+					</div>
+
+					<!-- 達成済 -->
 					<h5 class="mt-4">★達成済</h5>
-					<table border="1">
-    					<thead>
-        					<tr>
-            					<th>ステータス</th>								
-								<th>id</th>
-            					<th>タイトル</th>
-            					<th>カテゴリー</th>
-            					<th>累計達成日数</th>
-            					<th>連続達成日数</th>
-            					<th>操作</th>
-        					</tr>
-    					</thead>
-    					<tbody id="completeTbody">
-        					<tr th:each="task : ${completeTasks}" th:if="${task != null}" class="task-row" th:attr="data-task-id=${task.id}">
-								<td>
-									<input type="checkbox"
-							       		th:value="${task.id}"
-							       		th:checked="true"
-							       		th:data-date="${date}"
-							       		th:data-title="${task.title}"
-							       		onchange="onTaskCheckboxChange(this)"/>
-									完了
-								</td>								
-								<td th:text="${task.id}"></td>
-								<td th:text="${task.title}"></td>
-								<td>
-        							<span th:if="${task.category != null}"
-              							th:text="${task.category.categoryName}"
-              							th:style="'background-color:' + ${task.category.colorCode} + ';color:#000; padding:3px 6px; border-radius:5px;'">
-        							</span>
-        							<span th:if="${task.category == null}">なし</span>
-    							</td>
-								<td th:text="${task.totalCompletedDays}"></td>
-								<td th:text="${task.consecutiveCompletedDays}"></td>
-            					<td>
-								<!-- 編集ボタン -->	
-								<a th:href="@{/tasks/edit/{id}(id=${task.id})}" class="btn btn-sm btn-primary">編集</a>
-            					<!-- 削除ボタン -->
-            					<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:data-task-id="${task.id}">削除</button>
-        						</td>
-        					</tr>
-    					</tbody>   					
-					</table>
+					<div id="completeList">
+    					<div th:each="task : ${completeTasks}" th:if="${task != null}" 
+         					class="task-item" th:attr="data-task-id=${task.id}">
+
+        					<!-- チェックボックス -->
+        					<div class="task-check">
+            					<input type="checkbox"
+                   					th:value="${task.id}"
+                   					th:checked="true"
+                   					th:data-date="${date}"
+                   					th:data-title="${task.title}"
+                   					onchange="onTaskCheckboxChange(this)" />
+        					</div>
+
+        					<!-- タスク内容 -->
+        					<div class="task-content">
+            					<span class="task-title" th:text="${task.title}"></span>
+            					<span class="category-label"
+                  					th:if="${task.category != null}"
+                  					th:text="${task.category.categoryName}"
+                  					th:style="'background-color:' + ${task.category.colorCode} +
+                            					';color:#000;padding:2px 6px;border-radius:4px;'">
+            					</span>
+        					</div>
+
+        					<!-- 達成日数 -->
+        					<div class="streak-text">
+            					<span th:text="'連続' + ${task.consecutiveCompletedDays} + '日達成'"></span>
+            					<br/>
+            					<span th:text="'累計' + ${task.totalCompletedDays} + '日達成'"></span>
+        					</div>
+
+        					<!-- 操作ボタン -->
+        					<div>
+            					<a th:href="@{/tasks/edit/{id}(id=${task.id})}" 
+               					class="btn-edit">編集</a>
+            					<button type="button" class="btn-delete"
+                    					data-bs-toggle="modal" 
+                    					data-bs-target="#deleteModal"
+                    					th:data-task-id="${task.id}">削除</button>
+        					</div>
+    					</div>
+					</div>
 					<div th:if="${successMessage}" class="alert alert-info">
 						<span th:text="${successMessage}"></span>
 					</div>
@@ -235,11 +234,11 @@
       		const $checkbox = $row.find('input[type="checkbox"]');
       		$checkbox.prop('checked', toCompleted);	
       		
-      		// 完了タスクのtbodyに移動
+      		// 完了タスクのListに移動
       		if (toCompleted) {
-        		$('#completeTbody').prepend($row);
+        		$('#completeList').prepend($row);
       		} else {
-        		$('#incompleteTbody').prepend($row);
+        		$('#incompleteList').prepend($row);
       		}
     		}
 

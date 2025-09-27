@@ -36,14 +36,18 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
 	List<Task> findDistinctLogDateByUser_IdAndStatusAndTitle(Integer userId, boolean status, String title);
 
 	// ユーザー・日付リストで達成済みタスクタイトル一覧を取得
-	@Query("SELECT DISTINCT t.logDate, t.title "
-			+ "FROM Task t "
-			+ "WHERE t.user.id = :userId "
-			+ "AND t.logDate IN :dates "
-			+ "AND t.status = true")
-	List<Object[]> findCompletedTaskTitlesByUserAndDates(
-			@Param("userId") Integer userId,
-			@Param("dates") List<LocalDate> dates);
+	@Query("""
+			SELECT DISTINCT t.logDate, t.title, c.colorCode
+			FROM Task t
+			LEFT JOIN t.category c
+			WHERE t.user.id = :userId
+			AND t.logDate IN :dates
+			AND t.status = true
+			""")
+			List<Object[]> findCompletedTaskTitlesWithColorsByUserAndDates(
+			    @Param("userId") Integer userId,
+			    @Param("dates") List<LocalDate> dates
+			);
 
 	// ユーザーIDに基づいて直近のタスクを3件取得
 	List<Task> findTop50ByUser_IdOrderByLogDateDesc(Integer userId);

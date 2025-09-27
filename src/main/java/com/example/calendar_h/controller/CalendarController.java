@@ -40,8 +40,9 @@ public class CalendarController {
 		List<LocalDate> dateList = firstDay.datesUntil(lastDay.plusDays(1))
 				.toList();
 
-		// サービスを使って達成済みタスク名マップ取得
-		Map<LocalDate, List<String>> completedMap = taskService.getCompletedTaskTitlesByDates(userId, dateList);
+		// サービスを使って達成済みタスク名、カテゴリーカラーマップ取得
+		Map<LocalDate, List<Map<String, String>>> completedMap =
+			    taskService.getCompletedTasksWithColors(userId, dateList);
 
 		// ★ 今日の日付とタスクデータをModelにセット
 		model.addAttribute("today", today.toString()); // "2025-09-10"の形式
@@ -79,7 +80,7 @@ public class CalendarController {
 
 	@GetMapping("/calendar/completed-tasktitles")
 	@ResponseBody
-	public Map<String, List<String>> getCompletedTaskTitles(
+	public Map<String, List<Map<String, String>>> getCompletedTaskDetails(
 			@AuthenticationPrincipal UserDetailsImpl principal,
 			@RequestParam List<String> dates) {
 
@@ -88,10 +89,14 @@ public class CalendarController {
 				.map(LocalDate::parse)
 				.toList();
 
-		Map<LocalDate, List<String>> titlesMap = taskService.getCompletedTaskTitlesByDates(userId, localDates);
+		Map<LocalDate, List<Map<String, String>>> detailsMap =
+		        taskService.getCompletedTasksWithColors(userId, localDates);
 
-		// LocalDate → String に変換
-		return titlesMap.entrySet().stream()
-				.collect(Collectors.toMap(e -> e.getKey().toString(), Map.Entry::getValue));
+		// LocalDateキーをStringに変換
+	    return detailsMap.entrySet().stream()
+	        .collect(Collectors.toMap(
+	            e -> e.getKey().toString(),
+	            Map.Entry::getValue
+	        ));
 	}
 }

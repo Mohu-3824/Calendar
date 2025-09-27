@@ -106,12 +106,12 @@ $(function() {
                     // 既存の.task-listを一旦削除
         			$cell.find(".task-list").remove();
         			
-                    const titles = completedMap[dateStr];
-                    if (titles.length > 0) {
-                        const taskListHtml = titles
-                            .map(t => `<div class="task-title">${t}</div>`)
-                            .join("");
-                        $cell.append(`<div class="task-list">${taskListHtml}</div>`);
+                    const tasks = completedMap[dateStr];
+                	if (tasks.length > 0) {
+                    	const taskListHtml = tasks.map(t =>
+                       		`<div class="task-title" style="background-color:${t.color}">${t.title}</div>`
+                    	).join("");
+                    	$cell.append(`<div class="task-list">${taskListHtml}</div>`);
                     }
                 }
             },
