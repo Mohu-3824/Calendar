@@ -57,12 +57,12 @@
 
         <!-- 戻るボタン -->
         <div class="center-btn">
-            <button onclick="history.back()">戻る</button>
+            <a th:href="@{/calendar}" class="btn btn-outline-secondary ms-2">カレンダーへ戻る</a>
         </div>
         <!-- 右下の＋ボタン -->
-    <button class="fab-btn" title="追加">
-        <i class="fas fa-plus"></i>
-    </button>
+    	<a th:href="@{/categories/new}" class="fab-btn" title="追加">
+    		<i class="fas fa-plus"></i>
+		</a>
     </main>
         	<div th:replace="~{fragment :: footer}"></div>
         </div>

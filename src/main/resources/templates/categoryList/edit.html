@@ -66,25 +66,65 @@
     <div th:replace="~{fragment :: scripts}"></div>
 </div>
 <script>
-window.addEventListener("DOMContentLoaded", function() {
-    // アイコン選択
-    document.querySelectorAll(".icon-item").forEach(item => {
-        item.addEventListener("click", function() {
-            document.getElementById("iconImage").value = this.getAttribute("data-icon");
-            document.querySelectorAll(".icon-item").forEach(el => el.classList.remove("selected"));
-            this.classList.add("selected");
-        });
-    });
+(function() {
+    $(document).ready(function() {
+        const $iconItems = $(".icon-item");
+        const $iconField = $("#iconImage");
 
-    // カラー選択
-    document.querySelectorAll(".color-swatch").forEach(swatch => {
-        swatch.addEventListener("click", function() {
-            document.getElementById("colorCode").value = this.getAttribute("data-color");
-            document.querySelectorAll(".color-swatch").forEach(el => el.classList.remove("selected"));
-            this.classList.add("selected");
+        // ======================
+        // アイコンクリック処理
+        // ======================
+        $iconItems.on("click", function() {
+            const iconName = $(this).data("icon");
+
+            // hiddenフィールドにセット
+            $iconField.val(iconName);
+
+            // 選択状態を更新
+            $iconItems.removeClass("selected");
+            $(this).addClass("selected");
         });
+
+        // ======================
+        // 編集時の初期選択状態反映
+        // ======================
+        const currentVal = $iconField.val();
+        if (currentVal) {
+            const $currentItem = $iconItems.filter(`[data-icon="${currentVal}"]`);
+            if ($currentItem.length > 0) {
+                $currentItem.addClass("selected");
+            }
+        }
+
+        // ======================
+        // カラークリック処理
+        // ======================
+        const $colorItems = $(".color-swatch");
+        const $colorField = $("#colorCode");
+
+        $colorItems.on("click", function() {
+            const colorCode = $(this).data("color");
+
+            // hiddenフィールドにセット
+            $colorField.val(colorCode);
+
+            // 選択状態を更新
+            $colorItems.removeClass("selected");
+            $(this).addClass("selected");
+        });
+
+        // ======================
+        // 編集時の初期カラー反映
+        // ======================
+        const currentColorVal = $colorField.val();
+        if (currentColorVal) {
+            const $currentColorItem = $colorItems.filter(`[data-color="${currentColorVal}"]`);
+            if ($currentColorItem.length > 0) {
+                $currentColorItem.addClass("selected");
+            }
+        }
     });
-});
+})();
 </script>
 </body>
 </html>

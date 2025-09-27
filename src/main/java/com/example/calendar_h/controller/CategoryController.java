@@ -6,7 +6,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -15,6 +17,8 @@ import com.example.calendar_h.entity.Category;
 import com.example.calendar_h.form.CategoryForm;
 import com.example.calendar_h.security.UserDetailsImpl;
 import com.example.calendar_h.service.CategoryService;
+
+import jakarta.validation.Valid;
 
 @Controller
 public class CategoryController {
@@ -63,6 +67,30 @@ public class CategoryController {
         return "categoryList/edit";
     }
     
+    // カテゴリー新規登録
+    @PostMapping("/categories/save")
+    @PreAuthorize("isAuthenticated()")
+    public String saveCategory(@Valid @ModelAttribute("categoryForm") CategoryForm form,
+                               BindingResult bindingResult,
+                               @AuthenticationPrincipal UserDetailsImpl principal,
+                               Model model) {
+
+        if (principal == null || principal.getUser() == null) {
+            return "redirect:/login";
+        }
+        Integer userId = principal.getUser().getId();
+
+        if (bindingResult.hasErrors()) {
+            // アイコンリスト・カラーリストを再設定してフォーム再表示
+            addIconAndColorList(model);
+            model.addAttribute("isEdit", false);
+            return "categoryList/edit";
+        }
+
+        categoryService.saveCategory(form, userId);
+        return "redirect:/categoryList";
+    }
+    
     // カテゴリー編集
     @GetMapping("/categories/edit/{id}")
     @PreAuthorize("isAuthenticated()")
@@ -95,6 +123,31 @@ public class CategoryController {
         return "categoryList/edit"; // category/edit.html に遷移
     }
     
+    // カテゴリー更新
+    @PostMapping("/categories/update/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String updateCategory(@PathVariable("id") Integer categoryId,
+                                 @Valid @ModelAttribute("categoryForm") CategoryForm form,
+                                 BindingResult bindingResult,
+                                 @AuthenticationPrincipal UserDetailsImpl principal,
+                                 Model model) {
+        if (principal == null || principal.getUser() == null) {
+            return "redirect:/login";
+        }
+        Integer userId = principal.getUser().getId();
+
+        if (bindingResult.hasErrors()) {
+            addIconAndColorList(model);
+            model.addAttribute("isEdit", true);
+            model.addAttribute("categoryId", categoryId);
+            return "categoryList/edit";
+        }
+
+        categoryService.updateCategory(form, categoryId, userId);
+        return "redirect:/categoryList";
+    }
+    
+    // カテゴリー削除
     @PostMapping("/categories/delete/{id}")
     @PreAuthorize("isAuthenticated()")
     public String deleteCategory(
@@ -117,5 +170,7 @@ public class CategoryController {
         }
 
         return "redirect:/categoryList"; // 一覧にリダイレクト
-    }    
+    }  
+    
+    
 }

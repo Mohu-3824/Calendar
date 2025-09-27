@@ -636,9 +636,15 @@ header {
 
 
 /* カテゴリー編集画面 */
+.icon-item {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
 .icon-item.selected {
-	 border:2px solid #000;
-	  border-radius:8px; 
+	border: 3px solid #007bff;             
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.6); 
+    background-color: rgba(0, 123, 255, 0.1); 
 }
 
 .color-swatch {
