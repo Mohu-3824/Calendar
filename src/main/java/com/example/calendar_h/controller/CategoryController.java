@@ -46,8 +46,16 @@ public class CategoryController {
     
     // 共通で渡す処理をメソッド化
     private void addIconAndColorList(Model model) {
-        model.addAttribute("iconList", List.of("exercise.png", "undo.png", "hobby.jpg"));
-        model.addAttribute("colorList", List.of("#ff0000","#ffa500","#ffff00","#008000","#0000ff","#800080"));
+    	 // ★ アイコンリストはここでは空、後で動的に読み込み
+        model.addAttribute("iconList", categoryService.getAvailableIconFiles());
+
+        // ★ カラーリスト拡張
+        model.addAttribute("colorList", List.of(
+            "#ffff00", "#ffc0cb", "#90ee90", "#ffa500", "#87cefa", "#ee82ee", 
+            "#ff0000", "#008000", "#0000ff", "#800000", "#000080", "#8b0000", 
+            "#006400", "#f5deb3", "#ffa07a", "#afeeee", "#d8bfd8", "#ffe4e1",
+            "#ffb6c1", "#add8e6" 
+        ));
     }
     
     // カテゴリー新規作成
@@ -170,7 +178,5 @@ public class CategoryController {
         }
 
         return "redirect:/categoryList"; // 一覧にリダイレクト
-    }  
-    
-    
+    }      
 }

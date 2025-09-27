@@ -1,6 +1,9 @@
 package com.example.calendar_h.service;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +33,23 @@ public class CategoryService {
 	public List<Category> getByUserId(Integer userId) {
 		return categoryRepository.findByUser_Id(userId);
 	}
+	
+	// アイコンファイル一覧を取得
+    public List<String> getAvailableIconFiles() {
+        try {
+            File folder = new File("src/main/resources/static/img");
+            if (folder.exists() && folder.isDirectory()) {
+                return Arrays.stream(folder.listFiles())
+                        .filter(f -> !f.isDirectory())
+                        .map(File::getName)
+                        .collect(Collectors.toList());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // フォルダがない場合のデフォルト
+        return List.of("default.png");
+    }
 	
 	// カテゴリー新規登録
 	@Transactional

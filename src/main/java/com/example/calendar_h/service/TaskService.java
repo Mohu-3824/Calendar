@@ -100,6 +100,11 @@ public class TaskService {
 	@Transactional
 	public Task createTask(User user, String title, LocalDate logDate, Boolean status, Integer categoryId) {
 		Task t = new Task();
+		
+		// ★未来日の完了禁止
+	    if (status && t.getLogDate().isAfter(LocalDate.now())) {
+	        throw new IllegalArgumentException("未来日のタスクは完了にできません");
+	    }
 
 		t.setUser(user);
 		t.setTitle(title);
@@ -119,6 +124,12 @@ public class TaskService {
 			Integer categoryId) {
 		Task t = taskRepository.findByIdAndUser_Id(taskId, userId)
 				.orElseThrow(() -> new IllegalArgumentException("タスクが見つかりません"));
+		
+		// 未来日の完了禁止
+	    if (status != null && status && logDate.isAfter(LocalDate.now())) {
+	        throw new IllegalArgumentException("未来日のタスクは完了にできません");
+	    }
+	    
 		t.setTitle(title);
 		t.setLogDate(logDate);
 		t.setStatus(status != null ? status : false); // nullなら未完了にしておく
@@ -135,6 +146,12 @@ public class TaskService {
 	public void updateTaskStatus(Integer taskId, Integer userId, boolean status) {
 		Task t = taskRepository.findByIdAndUser_Id(taskId, userId)
 				.orElseThrow(() -> new IllegalArgumentException("タスクが見つかりません"));
+		
+		// ★未来日の完了禁止
+	    if (status && t.getLogDate().isAfter(LocalDate.now())) {
+	        throw new IllegalArgumentException("未来日のタスクは完了にできません");
+	    }
+	    
 		t.setStatus(status);
 		taskRepository.save(t);
 	}

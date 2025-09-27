@@ -17,7 +17,7 @@
 					<input class="date-input" type="date" th:value="${date}" id="datePicker"/>
 					<a class="nav" th:href="@{/tasks/{d}(d=${#temporals.format(dateObj.plusDays(1), 'yyyy-MM-dd')})}">&gt;</a>
 					
-					<h3 class="title">本日のタスク</h3>
+					<h3 class="title text-center">本日のタスク</h3>
 			       <!-- 未達成タスク -->
 					<h5 class="mt-4">☆未達成</h5>					
 			        <div th:if="${#lists.isEmpty(tasks)}" class="text-muted small">タスクはありません</div>
@@ -118,7 +118,7 @@
 					</div>
 					<!-- 戻るボタン -->
 					<div class="text-center mt-3">
-    					<a th:href="@{/calendar}" class="btn btn-outline-secondary ms-2">カレンダーへ戻る</a>
+    					<a th:href="@{/calendar}" class="btn btn-outline-secondary">カレンダーへ戻る</a>
 					</div>					
     			</div>
 			</div>
@@ -141,7 +141,17 @@
       		const taskId = checkboxEl.value;
       		const date = checkboxEl.getAttribute('data-date');
       		const title = checkboxEl.getAttribute('data-title');
-
+      		
+      		// ★未来日の完了禁止
+    		const dateObj = new Date(date);
+    		const today = new Date();
+    		today.setHours(0,0,0,0);
+    		if (isChecked && dateObj > today) {
+        		alert('未来日のタスクは完了にできません');
+        		checkboxEl.checked = false;
+        		return;
+    		}
+      		
       		if (isChecked) {
         		// 完了 → モーダル表示
         		toToggle = { checkboxEl, taskId, date, title};

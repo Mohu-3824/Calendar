@@ -18,7 +18,9 @@
       <div class="recent-task-list">
           <div th:each="t : ${recentTasks}"
           		class="recent-task"
-     			th:style="'background-color:' + ${t.category != null ? t.category.colorCode : '#ccc'}">
+     			th:style="'background-color:' + ${t.category != null ? t.category.colorCode : '#ccc'}"
+     			th:attr="data-title=${t.title}, 
+                data-category-id=${t.category != null ? t.category.id : ''}">
               <span th:text="${t.title}"></span>
               <div class="small">
                   <span th:text="${t.consecutiveCompletedDays + '日連続達成中'}"></span><br>
@@ -77,6 +79,52 @@
   
   <div th:replace="~{fragment :: footer}"></div>
   <div th:replace="~{fragment :: scripts}"></div>
+  <script>
+	document.addEventListener('DOMContentLoaded', function() {
+  		document.querySelectorAll('.recent-task').forEach(function(taskEl) {
+    		taskEl.addEventListener('click', function() {
+      		const title = this.dataset.title;
+      		const categoryId = this.dataset.categoryId;
+
+      		// タスク名をフォームにセット
+      		document.querySelector('[name="title"]').value = title;
+
+      		// カテゴリーIDをhiddenにセット
+      		document.getElementById('categoryId').value = categoryId;
+
+      		// カテゴリー表示を選択状態にする（見た目反映）
+      		document.querySelectorAll('.category-item').forEach(function(catEl) {
+        		if (catEl.dataset.categoryId == categoryId) {
+          			catEl.classList.add('selected'); // CSSでselected見た目制御
+        		} else {
+          			catEl.classList.remove('selected');
+        		}
+      		});
+    		});
+ 		 }); 
+    	// ★未来日完了禁止（ステータスラジオ制御）
+    	const logDateInput = document.querySelector('[name="logDate"]');
+    	const statusRadios = document.querySelectorAll('input[name="status"]');
+    	function checkFutureDate() {
+        	const selected = logDateInput.value ? new Date(logDateInput.value) : null;
+        	const today = new Date();
+        	today.setHours(0,0,0,0);
+        	const isFuture = selected && selected > today;
+        	statusRadios.forEach(radio => {
+            	if (radio.value === "true") {
+                	radio.disabled = isFuture;
+                	if (isFuture && radio.checked) {
+                    	document.querySelector('input[name="status"][value="false"]').checked = true;
+                	}
+            	}
+        	});
+    	}
+    	if (logDateInput) {
+        	logDateInput.addEventListener('change', checkFutureDate);
+        	checkFutureDate();
+    	}
+	});
+	</script>
 </div>
 </body>
 </html>

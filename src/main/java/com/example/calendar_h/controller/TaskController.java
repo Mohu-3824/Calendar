@@ -284,9 +284,13 @@ public class TaskController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		Integer userId = principal.getUser().getId();
-
-		// タスクの完了状態を更新
-		taskService.updateTaskStatus(taskId, userId, done);
+		
+		try {
+	        taskService.updateTaskStatus(taskId, userId, done);
+	    } catch (IllegalArgumentException e) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                .body(Map.of("message", e.getMessage()));
+	    }
 
 		// 完了更新の結果を返す
 		return ResponseEntity.ok(Map.of("message", "ステータスを更新しました"));
