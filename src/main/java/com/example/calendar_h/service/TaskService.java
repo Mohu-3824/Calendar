@@ -181,6 +181,11 @@ public class TaskService {
 			long consecutive = getConsecutiveCompletedDaysForTask(userId, task.getTitle());
 			task.setTotalCompletedDays(total);
 			task.setConsecutiveCompletedDays(consecutive);
+			
+	        // カラーコードをセット
+	        if (task.getCategory() != null && task.getCategory().getColorCode() == null) {
+	            task.getCategory().setColorCode("#ccc"); // デフォルト色
+	        }			
 		}
 
 		return uniqueTasks;

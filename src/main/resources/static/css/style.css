@@ -512,11 +512,13 @@ footer {
 }
 
 .recent-task {
-	border-radius: 4px;
-	padding: 6px 10px;
-	font-size: 0.85rem;
-	color: #fff;
-	display: inline-block;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    color: #000;
+    min-width: 100px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 /* カテゴリー選択ボタン */

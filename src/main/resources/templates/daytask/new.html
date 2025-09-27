@@ -16,7 +16,9 @@
       <!-- 直近のタスク -->
       <h6>直近のタスク</h6>
       <div class="recent-task-list">
-          <div th:each="t : ${recentTasks}">
+          <div th:each="t : ${recentTasks}"
+          		class="recent-task"
+     			th:style="'background-color:' + ${t.category != null ? t.category.colorCode : '#ccc'}">
               <span th:text="${t.title}"></span>
               <div class="small">
                   <span th:text="${t.consecutiveCompletedDays + '日連続達成中'}"></span><br>
@@ -57,7 +59,7 @@
        				style="cursor:pointer; width:100px; height:100px; border-radius:8px;">
        
     				<img th:if="${cat.iconImage != null}" 
-         			th:src="@{'/images/categories/' + ${cat.iconImage}}" 
+         			th:src="@{'/img/' + ${cat.iconImage}}" 
          			alt="icon" style="width:40px; height:40px;">
     				<div th:text="${cat.categoryName}"></div>
   				</div>
