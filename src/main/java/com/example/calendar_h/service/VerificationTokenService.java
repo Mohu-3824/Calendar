@@ -3,8 +3,8 @@ package com.example.calendar_h.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.calendar_h.controller.VerificationToken;
 import com.example.calendar_h.entity.User;
+import com.example.calendar_h.entity.VerificationToken;
 import com.example.calendar_h.repository.VerificationTokenRepository;
 
 @Service

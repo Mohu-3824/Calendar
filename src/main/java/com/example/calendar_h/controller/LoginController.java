@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.calendar_h.entity.User;
+import com.example.calendar_h.entity.VerificationToken;
 import com.example.calendar_h.event.SignupEventPublisher;
 import com.example.calendar_h.form.SignupForm;
 import com.example.calendar_h.service.UserService;

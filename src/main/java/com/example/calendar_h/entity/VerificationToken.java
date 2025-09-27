@@ -1,8 +1,6 @@
-package com.example.calendar_h.controller;
+package com.example.calendar_h.entity;
 
 import java.sql.Timestamp;
-
-import com.example.calendar_h.entity.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
