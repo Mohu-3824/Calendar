@@ -678,8 +678,84 @@ footer {
     transform: scale(1.05); 
 }
 
-@media screen and (min-width: 1400px) {
- .edelweiss-container {
-   max-width: 1200px;
- }
+/* ランキング全体の枠 */
+.ranking-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* タイトル */
+.ranking-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* タイトル下の線 */
+.ranking-divider {
+    border: none;
+    border-top: 1px solid #000;
+    margin: 5px auto 15px;
+    width: 90%;
+}
+
+/* 連続/累計の2カラム並び（PC） */
+.ranking-tables {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* 各ランキング表のラッパー */
+.ranking-section {
+    flex: 1 1 200px;
+}
+
+/* 表本体 */
+.ranking-table {
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+.ranking-table td {
+    padding: 4px 6px;
+    vertical-align: middle;
+}
+
+/* 順位セル */
+.rank-num {
+    font-weight: bold;
+    width: 35px;
+    text-align: right;
+}
+
+/* 日数セル */
+.rank-days {
+    text-align: left;
+    width: 50px;
+}
+
+/* タスクタイトルのバッジ風表示 */
+.ranking-table .task-title {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-weight: bold;
+}
+
+.ranking-table .task-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+    object-fit: cover;
+    border-radius: 2px;
+}
+
+/* スマホで縦並び */
+@media screen and (max-width: 576px) {
+    .ranking-tables {
+        flex-direction: column;
+        align-items: center;
+    }
 }

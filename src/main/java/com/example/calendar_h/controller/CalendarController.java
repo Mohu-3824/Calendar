@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.calendar_h.entity.Task;
 import com.example.calendar_h.security.UserDetailsImpl;
 import com.example.calendar_h.service.TaskService;
 
@@ -44,11 +45,18 @@ public class CalendarController {
 		Map<LocalDate, List<Map<String, String>>> completedMap =
 			    taskService.getCompletedTasksWithColors(userId, dateList);
 
-		// ★ 今日の日付とタスクデータをModelにセット
+		// 今日の日付とタスクデータをModelにセット
 		model.addAttribute("today", today.toString()); // "2025-09-10"の形式
 		// LocalDateキーを文字列に変換して渡す
 		model.addAttribute("completedTasks", completedMap.entrySet().stream()
 				.collect(Collectors.toMap(e -> e.getKey().toString(), Map.Entry::getValue)));
+		
+	    // ランキングデータを渡す
+	    List<Task> totalRank = taskService.getTotalCompletedDaysRanking(userId, 5);
+	    List<Task> consecutiveRank = taskService.getConsecutiveCompletedDaysRanking(userId, 5);
+
+	    model.addAttribute("totalRank", totalRank);
+	    model.addAttribute("consecutiveRank", consecutiveRank);
 
 		return "calendar/index";
 	}

@@ -52,4 +52,8 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
 	// ユーザーIDに基づいて直近のタスクを3件取得
 	@EntityGraph(attributePaths = {"category"})
 	List<Task> findTop50ByUser_IdOrderByLogDateDesc(Integer userId);
+	
+	
+	@EntityGraph(attributePaths = {"category"})
+	List<Task> findDistinctByUser_IdAndStatus(Integer userId, boolean status);
 }

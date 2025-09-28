@@ -211,4 +211,95 @@ public class TaskService {
 
 		return uniqueTasks;
 	}
+	
+    /**
+     * 累計達成日数ランキング上位 limit 件を返す
+     */
+    @Transactional(readOnly = true)
+    public List<Task> getTotalCompletedDaysRanking(Integer userId, int limit) {
+        // 完了タスク（カテゴリー込み）を取得
+        List<Task> allCompleted = taskRepository.findDistinctByUser_IdAndStatus(userId, true);
+
+        // タイトルで重複排除（最新日付のTaskを代表として使う）
+        List<Task> unique = allCompleted.stream()
+            .collect(Collectors.toMap(
+                Task::getTitle,
+                t -> t,
+                (existing, replacement) -> existing
+            ))
+            .values()
+            .stream()
+            .collect(Collectors.toList());
+
+        // 各タスクに累計日数をセット
+        for (Task task : unique) {
+            long totalDays = taskRepository
+                .countDistinctLogDateByUser_IdAndStatusAndTitle(userId, true, task.getTitle());
+            task.setTotalCompletedDays(totalDays);
+        }
+
+        // 上位 limit 件を返す
+        return unique.stream()
+            .sorted((a, b) -> Long.compare(b.getTotalCompletedDays(), a.getTotalCompletedDays()))
+            .limit(limit)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * 連続達成日数ランキング上位 limit 件を返す
+     */
+    @Transactional(readOnly = true)
+    public List<Task> getConsecutiveCompletedDaysRanking(Integer userId, int limit) {
+        // 完了タスク（カテゴリー込み）を取得
+        List<Task> allCompleted = taskRepository.findDistinctByUser_IdAndStatus(userId, true);
+
+        // タイトルで重複排除
+        List<Task> unique = allCompleted.stream()
+            .collect(Collectors.toMap(
+                Task::getTitle,
+                t -> t,
+                (existing, replacement) -> existing
+            ))
+            .values()
+            .stream()
+            .collect(Collectors.toList());
+
+        // 各タスクに連続日数をセット
+        for (Task task : unique) {
+            long consecutiveDays = calculateConsecutiveDays(userId, task.getTitle());
+            task.setConsecutiveCompletedDays(consecutiveDays);
+        }
+
+        // 上位 limit 件を返す
+        return unique.stream()
+            .sorted((a, b) -> Long.compare(b.getConsecutiveCompletedDays(), a.getConsecutiveCompletedDays()))
+            .limit(limit)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * 連続達成日数計算
+     */
+    private long calculateConsecutiveDays(Integer userId, String taskTitle) {
+        List<Task> completedTasks =
+            taskRepository.findDistinctLogDateByUser_IdAndStatusAndTitle(userId, true, taskTitle);
+
+        completedTasks.sort((a, b) -> a.getLogDate().compareTo(b.getLogDate()));
+
+        long maxStreak = 0;
+        long currentStreak = 0;
+        LocalDate prevDate = null;
+
+        for (Task t : completedTasks) {
+            if (prevDate == null || t.getLogDate().isEqual(prevDate.plusDays(1))) {
+                currentStreak++;
+            } else {
+                currentStreak = 1;
+            }
+            prevDate = t.getLogDate();
+            maxStreak = Math.max(maxStreak, currentStreak);
+        }
+
+        return maxStreak;
+    }
 }
