@@ -31,57 +31,58 @@
   				<div class="calendar-grid" id="calendarGrid" 
        				th:data-today="${today}">
   				</div>
-<div class="ranking-container">
-    <h5 class="ranking-title">達成済タスクランキング</h5>
-    <hr class="ranking-divider">
+				<div class="ranking-container">
+    				<h5 class="ranking-title">達成済タスクランキング</h5>
+    				<hr class="ranking-divider">
 
-    <div class="ranking-tables">
-        <!-- 連続達成日数 -->
-        <div class="ranking-section">
-            <h6>連続達成日数</h6>
-            <table class="ranking-table">
-                <tbody>
-                    <tr th:each="task, iterStat : ${consecutiveRank}">
-                        <td class="rank-num">[[${iterStat.index + 1}]]位</td>
-                        <td>
-                            <span class="task-title" th:style="'background-color:' + ${task.category.colorCode}">
-                                <img th:if="${task.category.iconImage != null}"
-                                     th:src="@{'/img/' + ${task.category.iconImage}}"
-                                     class="task-icon">
-                                <span th:text="${task.title}"></span>
-                            </span>
-                        </td>
-                        <td class="rank-days">[[${task.consecutiveCompletedDays}]]日</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    				<div class="ranking-tables">
+        				<!-- 連続達成日数 -->
+        				<div class="ranking-section">
+            				<h6>連続達成日数</h6>
+            				<table class="ranking-table">
+                				<tbody>
+                    				<tr th:each="task, iterStat : ${consecutiveRank}">
+                        				<td class="rank-num">[[${iterStat.index + 1}]]位</td>
+                        				<td>
+                            				<span class="task-title" th:style="'background-color:' + ${task.category.colorCode}">
+                                				<img th:if="${task.category.iconImage != null}"
+                                     				th:src="@{'/img/categoryImage/' + ${task.category.iconImage}}"
+                                     				class="task-icon">
+                                				<span th:text="${task.title}"></span>
+                            				</span>
+                        				</td>
+                        				<td class="rank-days">[[${task.consecutiveCompletedDays}]]日</td>
+                    				</tr>
+                				</tbody>
+            				</table>
+        				</div>
 
-        <!-- 累計達成日数 -->
-        <div class="ranking-section">
-            <h6>累計達成日数</h6>
-            <table class="ranking-table">
-                <tbody>
-                    <tr th:each="task, iterStat : ${totalRank}">
-                        <td class="rank-num">[[${iterStat.index + 1}]]位</td>
-                        <td>
-                            <span class="task-title" th:style="'background-color:' + ${task.category.colorCode}">
-                                <img th:if="${task.category.iconImage != null}"
-                                     th:src="@{'/img/' + ${task.category.iconImage}}"
-                                     class="task-icon">
-                                <span th:text="${task.title}"></span>
-                            </span>
-                        </td>
-                        <td class="rank-days">[[${task.totalCompletedDays}]]日</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-		</div>
+        				<!-- 累計達成日数 -->
+        				<div class="ranking-section">
+            				<h6>累計達成日数</h6>
+            				<table class="ranking-table">
+                				<tbody>
+                    				<tr th:each="task, iterStat : ${totalRank}">
+                        				<td class="rank-num">[[${iterStat.index + 1}]]位</td>
+                        				<td>
+                            				<span class="task-title" th:style="'background-color:' + ${task.category.colorCode}">
+                                				<img th:if="${task.category.iconImage != null}"
+                                     				th:src="@{'/img/categoryImage/' + ${task.category.iconImage}}"
+                                     				class="task-icon">
+                                				<span th:text="${task.title}"></span>
+                            				</span>
+                        				</td>
+                        				<td class="rank-days">[[${task.totalCompletedDays}]]日</td>
+                    				</tr>
+                				</tbody>
+            				</table>
+        				</div>
+    				</div>
+				</div>
+			</div>
 		<div th:replace="~{fragment :: footer}"></div>
 		<div th:replace="~{fragment :: scripts}"></div>
 		<script th:src="@{/js/siteRouting.js}"></script>
+	</div>
 	</body>
 </html>

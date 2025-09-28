@@ -17,7 +17,8 @@
 					<input class="date-input" type="date" th:value="${date}" id="datePicker"/>
 					<a class="nav" th:href="@{/tasks/{d}(d=${#temporals.format(dateObj.plusDays(1), 'yyyy-MM-dd')})}">&gt;</a>
 					
-					<h3 class="title text-center">本日のタスク</h3>
+					<h3 class="title text-center mb-3">本日のタスク</h3>
+					<hr class="section-divider">
 			       <!-- 未達成タスク -->
 					<h5 class="mt-4">☆未達成</h5>					
 			        <div th:if="${#lists.isEmpty(tasks)}" class="text-muted small">タスクはありません</div>
@@ -142,11 +143,9 @@
       		const date = checkboxEl.getAttribute('data-date');
       		const title = checkboxEl.getAttribute('data-title');
       		
-      		// ★未来日の完了禁止
-    		const dateObj = new Date(date);
-    		const today = new Date();
-    		today.setHours(0,0,0,0);
-    		if (isChecked && dateObj > today) {
+			// 現在の日付を YYYY-MM-DD 文字列形式で取得
+    		const todayStr = new Date().toISOString().slice(0, 10);
+    		if (isChecked && date > todayStr) {
         		alert('未来日のタスクは完了にできません');
         		checkboxEl.checked = false;
         		return;

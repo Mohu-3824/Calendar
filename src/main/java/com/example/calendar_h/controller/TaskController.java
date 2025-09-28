@@ -154,7 +154,7 @@ public class TaskController {
 		Integer userId = principal.getUser().getId();
 		model.addAttribute("recentTasks", taskService.getRecentTasksByUser(userId));
 
-		// ★カテゴリー一覧
+		// カテゴリ一覧
 		model.addAttribute("categories", categoryService.getByUserId(userId));
 
 		return "daytask/new";

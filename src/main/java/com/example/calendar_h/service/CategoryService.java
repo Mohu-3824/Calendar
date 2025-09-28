@@ -37,7 +37,7 @@ public class CategoryService {
 	// アイコンファイル一覧を取得
     public List<String> getAvailableIconFiles() {
         try {
-            File folder = new File("src/main/resources/static/img");
+            File folder = new File("src/main/resources/static/img/categoryImage");
             if (folder.exists() && folder.isDirectory()) {
                 return Arrays.stream(folder.listFiles())
                         .filter(f -> !f.isDirectory())

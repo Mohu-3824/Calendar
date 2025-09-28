@@ -113,7 +113,7 @@ $(function() {
                         	// アイコンがある場合のみ画像タグを用意
                         	let iconHtml = "";
                         	if (t.icon) {
-                            	iconHtml = `<img src="/img/${t.icon}" 
+                            	iconHtml = `<img src="/img/categoryImage/${t.icon}" 
                                               alt="category icon" 
                                               class="task-icon"
                                               style="width:16px;height:16px;margin-right:4px;">`;

@@ -101,10 +101,10 @@ public class TaskService {
 	public Task createTask(User user, String title, LocalDate logDate, Boolean status, Integer categoryId) {
 		Task t = new Task();
 		
-		// ★未来日の完了禁止
-	    if (status && t.getLogDate().isAfter(LocalDate.now())) {
-	        throw new IllegalArgumentException("未来日のタスクは完了にできません");
-	    }
+		// 未来日の完了禁止
+		if (status != null && status && logDate.isAfter(LocalDate.now())) {
+		    throw new IllegalArgumentException("未来日のタスクは完了にできません");
+		}
 
 		t.setUser(user);
 		t.setTitle(title);

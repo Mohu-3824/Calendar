@@ -8,13 +8,12 @@ INSERT IGNORE INTO users (id, name, furigana, phone_number, email, password, ena
 
 /* categoriesテーブル */
 INSERT IGNORE INTO categories(id, user_id, category_name, icon_image, color_code) VALUES
-(1, 1, '運動', 'exercise.png', '#ffff00'),
-(2, 1, '勉強', 'book.jpg', '#ffc0cb'),
-(3, 1, '趣味', 'hobby2.jpg', '#90ee90'),
-(4, 1, '生活', 'life.jpg', '#ffa500'),
-(5, 1, '仕事', 'work.jpg', '#87cefa'),
-(6, 1, '休養', 'rest.jpg', '#ee82ee');
-
+(1, 1, '運動', 'exercise_walking.png', '#ffff00'),
+(2, 1, '勉強', 'hakase_book.png', '#ffc0cb'),
+(3, 1, '趣味', 'hobby_art.png', '#90ee90'),
+(4, 1, '生活', 'life_clean.png', '#ffa500'),
+(5, 1, '仕事', 'work_staff_man.png', '#87cefa'),
+(6, 1, '休養', 'rest_bath.png', '#ee82ee');
 
 /* tasksテーブル */
 INSERT IGNORE INTO tasks(user_id, category_id, title, log_date, status) VALUES

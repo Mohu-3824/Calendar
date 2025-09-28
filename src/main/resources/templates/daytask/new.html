@@ -11,7 +11,8 @@
 
   <main>
     <div class="container pt-4 pb-5 edelweiss-container">
-      <h3 class="title text-center mb-4" th:text="${isEdit} ? 'タスク編集' : 'タスク新規作成'"></h3>
+      <h3 class="title text-center mb-3" th:text="${isEdit} ? 'タスク編集' : 'タスク新規作成'"></h3>
+      <hr class="section-divider">
       
       <!-- 直近のタスク -->
       <h6>直近のタスク</h6>
@@ -60,7 +61,7 @@
        					th:style="'background-color:' + ${cat.colorCode}">
        
     				<img th:if="${cat.iconImage != null}" 
-         			th:src="@{'/img/' + ${cat.iconImage}}" 
+         			th:src="@{'/img/categoryImage/' + ${cat.iconImage}}" 
          			alt="icon">
   					</div>
   					<div th:text="${cat.categoryName}" class="mt-1"></div>
@@ -105,24 +106,26 @@
     	const logDateInput = document.querySelector('[name="logDate"]');
     	const statusRadios = document.querySelectorAll('input[name="status"]');
     	function checkFutureDate() {
-        	const selected = logDateInput.value ? new Date(logDateInput.value) : null;
-        	const today = new Date();
-        	today.setHours(0,0,0,0);
-        	const isFuture = selected && selected > today;
-        	statusRadios.forEach(radio => {
-            	if (radio.value === "true") {
-                	radio.disabled = isFuture;
-                	if (isFuture && radio.checked) {
-                    	document.querySelector('input[name="status"][value="false"]').checked = true;
-                	}
-            	}
-        	});
-    	}
-    	if (logDateInput) {
-        	logDateInput.addEventListener('change', checkFutureDate);
-        	checkFutureDate();
-    	}
-	});
+        const selected = logDateInput.value ? logDateInput.value : null; // "YYYY-MM-DD" 形式
+        const todayStr = new Date().toISOString().slice(0, 10); // 今日の日付を文字列化
+
+        // 単純な文字列比較（タイムゾーンの影響なし）
+        const isFuture = selected && selected > todayStr;
+        statusRadios.forEach(radio => {
+            if (radio.value === "true") {
+                radio.disabled = isFuture;
+                if (isFuture && radio.checked) {
+                    document.querySelector('input[name="status"][value="false"]').checked = true;
+                }
+            }
+        });
+    }
+
+    if (logDateInput) {
+        logDateInput.addEventListener('change', checkFutureDate);
+        checkFutureDate(); // 初期表示時にも呼び出す
+    }
+});
 	</script>
 </div>
 </body>

@@ -11,7 +11,8 @@
 		<div th:replace="~{fragment :: header}"></div>
 
     <main>
-        <h2 class="page-title">カテゴリ一覧</h2>
+        <h3 class="page-title">カテゴリ一覧</h3>
+        <hr class="section-divider">
 
         <!-- カテゴリテーブル -->
         <table class="category-table">
@@ -28,7 +29,7 @@
                 <tr th:each="category : ${categoryList}">
                     <td><input type="checkbox" th:value="${category.id}"></td>
                     <td th:text="${category.categoryName}"></td>
-                    <td><img th:src="@{/img/{file}(file=${category.iconImage})}" alt="アイコン" style="width:30px; height:40px;" /></td>
+                    <td><img th:src="@{/img/categoryImage/{file}(file=${category.iconImage})}" alt="アイコン" style="width:40px; height:40px;" /></td>
                     <td>
                         <span class="color-box" th:style="'background-color:' + ${category.colorCode}"></span>
                     </td>

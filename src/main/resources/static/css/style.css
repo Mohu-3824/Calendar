@@ -48,6 +48,61 @@ footer {
  min-height: 60px;
 }
 
+.section-divider {
+    border: none;            
+    border-top: 1px solid #000; 
+    margin: 5px auto 15px;
+    width: 30%;
+}
+
+/* Top page */
+.hero-bg {
+    background: radial-gradient(
+                  rgba(255, 255, 255, 0.85), 
+                  rgba(255, 255, 255, 0.95)
+               ), 
+               url('/img/login_flower.png') center/cover no-repeat;
+    background-attachment: scroll;
+    border-radius: 12px;
+}
+
+.hero-bg h1,
+.hero-bg p {
+    color: #222;
+}
+
+.hero-bg .btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+}
+
+.row-spaced {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+/* キャプションを白文字＋黒背景に */
+.carousel-caption {
+  color: #fff; /* 白文字 */
+  background: rgba(0, 0, 0, 0.6); /* 黒半透明背景 */
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+}
+
+/* カルーセルのナビ矢印を黒背景でも目立つように白に戻す */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: invert(1);
+}
+
+/* カルーセル画像をセンター配置 & 10%縮小 */
+.carousel-inner img {
+  width: 70%;         /* 横幅を90%に縮小 */
+  margin: 0 auto;     /* 左右中央寄せ */
+  display: block;     /* ブロック要素化でmargin適用 */
+  border-radius: 12px;
+}
+
 /* Login Container */
 
 
@@ -126,7 +181,7 @@ footer {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
     border-radius: 8px;
-    padding: 12px;
+
     font-size: 16px;
     font-weight: 500;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -459,6 +514,7 @@ footer {
 .btn-edit {
     background: white;
     border: 1px solid #666;
+    border-radius: 8px;
     padding: 5px 10px;
     margin-right: 5px;
     cursor: pointer;
@@ -466,6 +522,7 @@ footer {
 
 .btn-delete {
     background: blue;
+    border-radius: 8px;
     color: white;
     padding: 5px 10px;
     border: none;
