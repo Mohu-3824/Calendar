@@ -10,6 +10,43 @@
 		<div class="edelweiss-wrapper">
 		<div th:replace="~{fragment :: header}"></div>
 		<main>
+  			<div class="hero text-center bg-light p-5 mb-4">
+    		<h1 class="display-4">Edelweiss</h1>
+    			<p class="lead">毎日の予定とタスクを、シンプルに管理できるカレンダーアプリ</p>
+    			<a href="/login" class="btn btn-primary btn-lg">今すぐ始める</a>
+  			</div>
+
+  			<div class="row text-center">
+    			<div class="col-md-3">
+      				<div class="card p-3">
+        				<h5>📅 カレンダー</h5>
+        				<p>日付ごとに予定とタスクを管理</p>
+      				</div>
+    			</div>
+    			<div class="col-md-3">
+      				<div class="card p-3">
+        				<h5>✅ タスクリスト</h5>
+        				<p>毎日のToDoを簡単に追加・編集</p>
+      				</div>
+    			</div>
+    			<div class="col-md-3">
+      				<div class="card p-3">
+        				<h5>🎯 達成記録</h5>
+        				<p>達成日数を自動で集計</p>
+      				</div>
+    			</div>
+    			<div class="col-md-3">
+      				<div class="card p-3">
+        				<h5>🎨 カテゴリー管理</h5>
+        				<p>色やアイコンで分類して見やすく</p>
+      				</div>
+    			</div>
+  			</div>
+
+  			<div class="text-center mt-5">
+    			<img src="/img/sample_calendar.png" alt="カレンダー画面サンプル" class="img-fluid rounded shadow">
+  			</div>
+  			
 			<div class="container pt-4 pb-5 edelweiss-container">
 				<div th:if="${param.loggedIn}" class="alert alert-info">
                 ログインしました。

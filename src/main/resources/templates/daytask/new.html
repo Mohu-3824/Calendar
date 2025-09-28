@@ -52,22 +52,21 @@
   		</div>
   		
   		<div class="col-12">
-    		<label class="form-label">カテゴリー</label>
+    		<label class="form-label">カテゴリ</label>
     		<div class="category-list d-flex flex-wrap">
-  				<div th:each="cat : ${categories}" 
-       				class="category-item m-2 p-2 text-center"
-       				th:attr="data-category-id=${cat.id}"
-       				th:style="'background-color:' + ${cat.colorCode}"
-       				style="cursor:pointer; width:100px; height:100px; border-radius:8px;">
+  				<div th:each="cat : ${categories}" class="m-2 p-2 text-center">
+       				<div class="category-item"
+       					th:attr="data-category-id=${cat.id}"
+       					th:style="'background-color:' + ${cat.colorCode}">
        
     				<img th:if="${cat.iconImage != null}" 
          			th:src="@{'/img/' + ${cat.iconImage}}" 
-         			alt="icon" style="width:40px; height:40px;">
-    				<div th:text="${cat.categoryName}"></div>
-  				</div>
+         			alt="icon">
+  					</div>
+  					<div th:text="${cat.categoryName}" class="mt-1"></div>
+				</div>
+				<input type="hidden" th:field="*{categoryId}" id="categoryId">
 			</div>
-			<input type="hidden" th:field="*{categoryId}" id="categoryId">
-		</div>
 
         <div class="col-12 text-center mt-3">
           <button type="submit" class="btn btn-primary" th:text="${isEdit} ? '更新' : '登録'"></button>
@@ -89,10 +88,10 @@
       		// タスク名をフォームにセット
       		document.querySelector('[name="title"]').value = title;
 
-      		// カテゴリーIDをhiddenにセット
+      		// カテゴリIDをhiddenにセット
       		document.getElementById('categoryId').value = categoryId;
 
-      		// カテゴリー表示を選択状態にする（見た目反映）
+      		// カテゴリ表示を選択状態にする（見た目反映）
       		document.querySelectorAll('.category-item').forEach(function(catEl) {
         		if (catEl.dataset.categoryId == categoryId) {
           			catEl.classList.add('selected'); // CSSでselected見た目制御

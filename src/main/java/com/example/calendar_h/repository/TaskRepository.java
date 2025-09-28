@@ -37,7 +37,7 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
 
 	// ユーザー・日付リストで達成済みタスクタイトル一覧を取得
 	@Query("""
-			SELECT DISTINCT t.logDate, t.title, c.colorCode
+			SELECT DISTINCT t.logDate, t.title, c.colorCode, c.iconImage
 			FROM Task t
 			LEFT JOIN t.category c
 			WHERE t.user.id = :userId

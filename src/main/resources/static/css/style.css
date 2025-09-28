@@ -3,9 +3,19 @@ html {
 }
 
 body {
- font-family: 'Noto Sans JP', sans-serif;
+ 	font-family: 'Noto Sans JP', sans-serif;
+ 	margin: 0;
+    padding: 0;
 }
 
+header {
+    display: flex;
+    justify-content: space-between;
+    background: #fff;
+    border-bottom: 1px solid #ccc;
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+}
 a {
  color: #5196a6;
  text-decoration: none !important;
@@ -109,6 +119,7 @@ footer {
     color: #764ba2;
     text-decoration: underline;
 }
+
 
 /* Buttons */
 .btn-primary {
@@ -407,6 +418,10 @@ footer {
     border-bottom: 1px solid #eee;
     gap: 8px;
 }
+.task-icon {
+    vertical-align: middle;
+}
+
 .task-content {
     flex: 1;
     display: flex;
@@ -444,16 +459,18 @@ footer {
 .btn-edit {
     background: white;
     border: 1px solid #666;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 5px 10px;
+    margin-right: 5px;
+    cursor: pointer;
 }
+
 .btn-delete {
     background: blue;
     color: white;
-    padding: 2px 6px;
-    border-radius: 4px;
-}
-        
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+}        
 /* 日付ナビ */
 .date-nav {
 	display: flex;
@@ -509,16 +526,25 @@ footer {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 10px;
+	margin-bottom: 20px;
 }
 
 .recent-task {
+  	flex: 0 0 auto;
+  	width: 120px;
     border-radius: 8px;
-    padding: 8px 12px;
+    padding: 10px;
+    margin: 4px;
     font-size: 0.9rem;
     color: #000;
     min-width: 100px;
     text-align: center;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.recent-task .small {
+  font-size: 0.8em;
 }
 
 /* カテゴリー選択ボタン */
@@ -529,25 +555,35 @@ footer {
 	margin-top: 10px;
 }
 
+.category-list {
+  gap: 10px;
+}
+
 .category-item {
+	width: 120px;
+  	height: 90px;
+  	display: flex;
 	border: 2px solid #ccc;
 	border-radius: 8px;
-	padding: 50px;
-	text-align: center;
+	padding: 50px;	
+  	align-items: center;
+  	justify-content: center;
 	cursor: pointer;
-	transition: border 0.3s, background-color 0.3s;
-	cursor: pointer;
+	transition: transform 0.2s ease-in-out, box-shadow 0.2s ease;
 	user-select: none;
 }
 
 .category-item.selected {
-	border: 3px solid #000;
+  outline: 3px solid #ff9800;
+  transform: scale(1.05);
+  box-shadow: 0 0 8px rgba(0,0,0,0.3);
 }
 
 .category-item img {
 	width: 50px;
 	height: 50px;
 	pointer-events: none;
+	margin-bottom: 8px;
 }
 
 .category-name {
@@ -562,21 +598,6 @@ footer {
 	font-weight: bold;
 	border-radius: 6px;
 	color: white;
-}
-
-body {
-    font-family: sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    background: #fff;
-    border-bottom: 1px solid #ccc;
-    padding: 0.5rem 1rem;
-    font-weight: bold;
 }
 
 .page-title {
@@ -602,22 +623,6 @@ header {
     width: 40px;
     height: 20px;
     border-radius: 4px;
-}
-
-.btn-edit {
-    background: white;
-    border: 1px solid #666;
-    padding: 5px 10px;
-    margin-right: 5px;
-    cursor: pointer;
-}
-
-.btn-delete {
-    background: blue;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
 }
 
 .center-btn {
@@ -655,7 +660,8 @@ header {
 .icon-item.selected {
 	border: 3px solid #007bff;             
     box-shadow: 0 0 8px rgba(0, 123, 255, 0.6); 
-    background-color: rgba(0, 123, 255, 0.1); 
+    background-color: rgba(0, 123, 255, 0.1);
+    transform: scale(1.05); 
 }
 
 .color-swatch {
@@ -668,7 +674,8 @@ header {
 
 .color-swatch.selected {
     border: 3px solid #007bff;
-    box-shadow: 0 0 5px rgba(0,123,255,0.6); 
+    box-shadow: 0 0 5px rgba(0,123,255,0.6);
+    transform: scale(1.05); 
 }
 
 @media screen and (min-width: 1400px) {

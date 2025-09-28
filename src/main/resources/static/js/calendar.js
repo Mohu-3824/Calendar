@@ -90,6 +90,7 @@ $(function() {
 
         const csrfToken = $('meta[name="_csrf"]').attr('content');
         const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+        
 
         $.ajax({
             url: "/calendar/completed-tasktitles",
@@ -108,11 +109,22 @@ $(function() {
         			
                     const tasks = completedMap[dateStr];
                 	if (tasks.length > 0) {
-                    	const taskListHtml = tasks.map(t =>
-                       		`<div class="task-title" style="background-color:${t.color}">${t.title}</div>`
-                    	).join("");
+						const taskListHtml = tasks.map(t => {
+                        	// アイコンがある場合のみ画像タグを用意
+                        	let iconHtml = "";
+                        	if (t.icon) {
+                            	iconHtml = `<img src="/img/${t.icon}" 
+                                              alt="category icon" 
+                                              class="task-icon"
+                                              style="width:16px;height:16px;margin-right:4px;">`;
+                        	}
+                        	return `<div class="task-title" style="background-color:${t.color}">
+                                    	${iconHtml}${t.title}
+                                	</div>`;
+                    	}).join("");
+
                     	$cell.append(`<div class="task-list">${taskListHtml}</div>`);
-                    }
+                	}
                 }
             },
             error: function () {

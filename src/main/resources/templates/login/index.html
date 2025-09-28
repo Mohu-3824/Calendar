@@ -16,32 +16,10 @@
                        <div class="col-xl-3 col-lg-4 col-md-5 col-sm-7 mb-4">
                            <h1 class="mb-4 text-center">ログイン</h1>   	
                 			<!-- Error Message -->
-                				<div th:if="${param.error}" class="alert alert-danger">
-                    				ユーザー名またはパスワードが正しくありません
-                				</div>
-                			<!-- Social Login Buttons -->
-                				<div class="d-flex align-items-center" style="justify-content:space-between;">
-									<div class="d-flex flex-column align-items-center">
-                    					<button type="button" class="d-flex justify-content-center align-items-center border border-dark rounded-circle bg-white fs-3" style="width:3rem; height:3rem;" onclick="">
-                        					<i class="fab fa-google"></i>
-                    					</button>
-                    					<p>Google</p>
-                					</div>
-                    
-                                 	<div class="d-flex flex-column align-items-center">
-                    					<button type="button" class="d-flex justify-content-center align-items-center border border-dark rounded-circle fs-3" style="width:3rem; height:3rem; background-color: rgb(0, 195, 0);" onclick="">
-                        					<i class="fab fa-line" style="color: white;"></i>
-                    					</button>
-                    					<p>LINE</p>
-                    				</div>
-                    
-                                 	<div class="d-flex flex-column align-items-center">
-                    					<button type="button" class="d-flex justify-content-center align-items-center border border-dark rounded-circle fs-3" style="color: white; width:3rem; height:3rem; background-color: rgb(24, 119, 242);" onclick="">
-                        					<i class="fab fa-facebook-f"></i>
-                    					</button>
-                    					<p>Facebook</p>
-                                 	</div>
-                				</div>
+                			<div th:if="${param.error}" class="alert alert-danger">
+                    			ユーザー名またはパスワードが正しくありません
+                			</div>
+
 							<form th:action="@{/login}" method="post">
                 				<!-- Email Input -->
                 				<div class="form-group mb-3">
@@ -73,12 +51,11 @@
             				<!-- Sign Up Link -->
             				<div class="d-flex flex-column align-items-center">
                 				<div class="signup-link">
-                    				アカウントをお持ちでない
-                    				<a th:href="@{/signup}">新規登録</a>
-                				</div>
-                				<a href="#" class="forgot-password">パスワードを忘れた方</a>
-                				</div>
-                           </div>
+                    				アカウントをお持ちでない方
+                    				<a class="ms-2" th:href="@{/signup}">新規登録</a>
+                				</div>               				
+                			</div>
+                         </div>
         			</div>
         		</div>
     		</main>

@@ -4,21 +4,21 @@
     	<div th:replace="~{fragment :: meta}"></div>
 		<div th:replace="~{fragment :: styles}"></div>
 
-    	<title>カテゴリー一覧</title>
+    	<title>カテゴリ一覧</title>
 	</head>
 	<body>
 		<div class="edelweiss-wrapper">
 		<div th:replace="~{fragment :: header}"></div>
 
     <main>
-        <h2 class="page-title">カテゴリー一覧</h2>
+        <h2 class="page-title">カテゴリ一覧</h2>
 
-        <!-- カテゴリーテーブル -->
+        <!-- カテゴリテーブル -->
         <table class="category-table">
             <thead>
                 <tr>
                     <th></th>
-                    <th>カテゴリー名</th>
+                    <th>カテゴリ名</th>
                     <th>アイコン</th>
                     <th>色</th>
                     <th></th>
@@ -35,14 +35,14 @@
                     <td>
                 		<!-- 編集ボタン -->
                 		<a th:href="@{'/categories/edit/' + ${category.id}}" 
-                   			class="btn btn-sm btn-edit btn-primary">編集</a>
+                   			class="btn-edit">編集</a>
 
                 		<!-- 削除ボタン -->
                 		<form th:action="@{'/categories/delete/' + ${category.id}}" 
                       		method="post" style="display:inline;">
                     		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     		<button type="submit" 
-                            	class="btn btn-sm btn-danger btn-delete"
+                            	class="btn-delete"
                            		onclick="return confirm('本当にこのカテゴリーを削除しますか？');">
                         		削除
                    			</button>

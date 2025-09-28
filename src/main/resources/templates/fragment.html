@@ -54,7 +54,8 @@
 									<span sec:authentication="principal.user.name"></span>
 								</a>
 								
-								<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownGeneral">
+								<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownGeneral">		
+									<a class="dropdown-item edelweiss-dropdown-item" th:href="@{/calendar}">マイカレンダー</a>
 									<a class="dropdown-item edelweiss-dropdown-item" th:href="@{/user}">会員情報</a>
 									<div class="dropdown-divider"></div>
 									<a class="dropdown-item edelweiss-dropdown-item" th:href="@{/logout}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

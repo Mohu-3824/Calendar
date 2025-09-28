@@ -165,10 +165,14 @@ public class TaskService {
 	        LocalDate date = (LocalDate) row[0];
 	        String title = (String) row[1];
 	        String colorCode = (String) row[2];
+	        String iconImage = (String) row[3];
 	        
 	        Map<String, String> taskInfo = new HashMap<>();
 	        taskInfo.put("title", title);
 	        taskInfo.put("color", colorCode != null ? colorCode : "#ddd");
+	        if (iconImage != null && !iconImage.isBlank()) {
+	            taskInfo.put("icon", iconImage);
+	        }
 
 	        map.computeIfAbsent(date, k -> new ArrayList<>()).add(taskInfo);
 		}
