@@ -100,32 +100,13 @@ public class TaskController {
 		return "daytask/index"; // daytask/index.htmlにデータを渡して表示
 	}
 
-	// タスク削除
-	@DeleteMapping("/delete/{id}")
-	@PreAuthorize("isAuthenticated()")
-	@ResponseBody
-	public ResponseEntity<Map<String, String>> deleteTask(@PathVariable("id") Integer taskId,
-			@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, RedirectAttributes redirectAttributes) {
-		Integer userId = userDetailsImpl.getUser().getId();
-		Optional<Task> optionalTask = taskService.getTaskByIdAndUser(taskId, userId);
-
-		if (optionalTask.isPresent()) {
-			taskService.deleteTask(optionalTask.get());
-			// 成功時は 200 OK + JSON メッセージを返す
-			return ResponseEntity.ok(Map.of("message", "タスクを削除しました。"));
-		} else {
-			// 見つからなければ 404 Not Found を返す
-			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(Map.of("message", "タスクが見つかりませんでした。"));
-		}
-	}
-
 	// タスク新規作成
 	@GetMapping("/new")
 	@PreAuthorize("isAuthenticated()")
 	public String newTask(
 			@AuthenticationPrincipal UserDetailsImpl principal,
 			@RequestParam(name = "date", required = false) String dateStr,
+			@RequestParam(name = "categoryId", required = false) Integer categoryId,
 			Model model) {
 
 		// ログインチェック（既存方針に合わせる）
@@ -156,7 +137,10 @@ public class TaskController {
 
 		// カテゴリ一覧
 		model.addAttribute("categories", categoryService.getByUserId(userId));
-
+		
+		// 新規カテゴリ選択用
+		model.addAttribute("selectedCategoryId", categoryId);
+		
 		return "daytask/new";
 	}
 
@@ -206,6 +190,7 @@ public class TaskController {
 	@PreAuthorize("isAuthenticated()")
 	public String editTask(@PathVariable("id") Integer taskId,
 			@AuthenticationPrincipal UserDetailsImpl principal,
+			@RequestParam(name = "categoryId", required = false) Integer categoryId,
 			Model model) {
 		if (principal == null || principal.getUser() == null) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "ログインが必要です。");
@@ -225,11 +210,10 @@ public class TaskController {
 		model.addAttribute("taskId", taskId); // 更新用に必要
 		model.addAttribute("isEdit", true); // 新規か編集かを判定するフラグ
 		model.addAttribute("recentTasks", taskService.getRecentTasksByUser(userId));
+	    model.addAttribute("selectedCategoryId", categoryId); // 新規カテゴリ選択用		
+		model.addAttribute("categories", categoryService.getByUserId(userId)); // カテゴリ一覧
 
-		// ★カテゴリー一覧
-		model.addAttribute("categories", categoryService.getByUserId(userId));
-
-		return "daytask/new"; // 新規作成画面を再利用
+		return "daytask/new";
 	}
 
 	// タスク更新処理
@@ -294,5 +278,25 @@ public class TaskController {
 
 		// 完了更新の結果を返す
 		return ResponseEntity.ok(Map.of("message", "ステータスを更新しました"));
+	}
+	
+	// タスク削除
+	@DeleteMapping("/delete/{id}")
+	@PreAuthorize("isAuthenticated()")
+	@ResponseBody
+	public ResponseEntity<Map<String, String>> deleteTask(@PathVariable("id") Integer taskId,
+			@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, RedirectAttributes redirectAttributes) {
+		Integer userId = userDetailsImpl.getUser().getId();
+		Optional<Task> optionalTask = taskService.getTaskByIdAndUser(taskId, userId);
+
+		if (optionalTask.isPresent()) {
+			taskService.deleteTask(optionalTask.get());
+			// 成功時は 200 OK + JSON メッセージを返す
+			return ResponseEntity.ok(Map.of("message", "タスクを削除しました。"));
+		} else {
+			// 見つからなければ 404 Not Found を返す
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(Map.of("message", "タスクが見つかりませんでした。"));
+		}
 	}
 }

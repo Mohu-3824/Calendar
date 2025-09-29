@@ -51,7 +51,7 @@ public class CategoryService {
         return List.of("default.png");
     }
 	
-	// カテゴリー新規登録
+	// カテゴリ新規登録
 	@Transactional
 	public void saveCategory(CategoryForm form, Integer userId) {
 	    Category category = new Category();
@@ -65,8 +65,24 @@ public class CategoryService {
 
 	    categoryRepository.save(category);
 	}
+	
+	
+	// カテゴリをタスク作成画面に返す
+	@Transactional
+	public Category saveCategoryReturnEntity(CategoryForm form, Integer userId) {
+	    Category category = new Category();
+	    User user = new User();
+	    user.setId(userId);
+	    category.setUser(user);
 
-	// カテゴリー更新
+	    category.setCategoryName(form.getCategoryName());
+	    category.setIconImage(form.getIconImage());
+	    category.setColorCode(form.getColorCode());
+
+	    return categoryRepository.save(category); // 保存して返却
+	}
+
+	// カテゴリ更新
 	@Transactional
 	public void updateCategory(CategoryForm form, Integer categoryId, Integer userId) {
 	    Category category = categoryRepository.findByIdAndUser_Id(categoryId, userId)
@@ -79,13 +95,13 @@ public class CategoryService {
 	    categoryRepository.save(category);
 	}
 	
-	// カテゴリーのidおよびユーザーidを取得
+	// カテゴリのidおよびユーザーidを取得
 	public Category findByIdAndUserId(Integer categoryId, Integer userId) {
 	    return categoryRepository.findByIdAndUser_Id(categoryId, userId)
 	            .orElseThrow(() -> new IllegalArgumentException("カテゴリーが見つかりません"));
 	}
 	
-	// カテゴリーの削除
+	// カテゴリの削除
 	@Transactional
 	public void deleteCategory(Integer categoryId, Integer userId) {
 	    Category category = categoryRepository.findByIdAndUser_Id(categoryId, userId)

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.calendar_h.entity.Category;
@@ -41,7 +42,7 @@ public class CategoryController {
         List<Category> categories = categoryService.getByUserId(userId);
 
         model.addAttribute("categoryList", categories);
-        return "categoryList/index"; // => categoryList.html
+        return "categoryList/index"; 
     }
     
     // 共通で渡す処理をメソッド化
@@ -61,7 +62,9 @@ public class CategoryController {
     // カテゴリー新規作成
     @GetMapping("/categories/new")
     @PreAuthorize("isAuthenticated()")
-    public String newCategory(@AuthenticationPrincipal UserDetailsImpl principal, Model model) {
+    public String newCategory(@AuthenticationPrincipal UserDetailsImpl principal, 
+    		@RequestParam(name = "returnTo", required = false) String returnTo, 
+    		Model model) {
         if (principal == null || principal.getUser() == null) {
             return "redirect:/login";
         }
@@ -69,6 +72,7 @@ public class CategoryController {
         CategoryForm form = new CategoryForm();
         model.addAttribute("categoryForm", form);
         model.addAttribute("isEdit", false);
+        model.addAttribute("returnTo", returnTo);
 
         addIconAndColorList(model);
         
@@ -81,6 +85,7 @@ public class CategoryController {
     public String saveCategory(@Valid @ModelAttribute("categoryForm") CategoryForm form,
                                BindingResult bindingResult,
                                @AuthenticationPrincipal UserDetailsImpl principal,
+                               @RequestParam(name = "returnTo", required = false) String returnTo,
                                Model model) {
 
         if (principal == null || principal.getUser() == null) {
@@ -92,10 +97,18 @@ public class CategoryController {
             // アイコンリスト・カラーリストを再設定してフォーム再表示
             addIconAndColorList(model);
             model.addAttribute("isEdit", false);
+            model.addAttribute("returnTo", returnTo);
             return "categoryList/edit";
         }
+        
+        // 保存して新しいカテゴリIDを取得
+        Category category = categoryService.saveCategoryReturnEntity(form, userId);
 
-        categoryService.saveCategory(form, userId);
+        // 戻り先がある場合はカテゴリID付きでリダイレクト
+        if (returnTo != null && !returnTo.isBlank()) {
+            return "redirect:/" + returnTo + "?categoryId=" + category.getId();
+        }
+
         return "redirect:/categoryList";
     }
     

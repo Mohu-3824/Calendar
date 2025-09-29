@@ -68,6 +68,13 @@
 				</div>
 				<input type="hidden" th:field="*{categoryId}" id="categoryId">
 			</div>
+			
+			<div class="mt-2">
+    	    	<a th:href="${isEdit} 
+        		? @{/categories/new(returnTo='tasks/edit/' + ${taskId})} 
+       			 : @{/categories/new(returnTo='tasks/new')}" 
+       			class="text-primary">新しいカテゴリを作る</a>
+			</div>
 
         <div class="col-12 text-center mt-3">
           <button type="submit" class="btn btn-primary" th:text="${isEdit} ? '更新' : '登録'"></button>
@@ -79,8 +86,18 @@
   
   <div th:replace="~{fragment :: footer}"></div>
   <div th:replace="~{fragment :: scripts}"></div>
-  <script>
+  <script th:inline="javascript">
 	document.addEventListener('DOMContentLoaded', function() {
+		const selectedCatId = /*[[${selectedCategoryId}]]*/ null;
+        if (selectedCatId) {
+            document.getElementById('categoryId').value = selectedCatId;
+            document.querySelectorAll('.category-item').forEach(function(el){
+                if (el.dataset.categoryId == selectedCatId) {
+                    el.classList.add('selected');
+                }
+            });
+        }
+        
   		document.querySelectorAll('.recent-task').forEach(function(taskEl) {
     		taskEl.addEventListener('click', function() {
       		const title = this.dataset.title;
@@ -102,7 +119,7 @@
       		});
     		});
  		 }); 
-    	// ★未来日完了禁止（ステータスラジオ制御）
+    	// 未来日完了禁止（ステータスラジオ制御）
     	const logDateInput = document.querySelector('[name="logDate"]');
     	const statusRadios = document.querySelectorAll('input[name="status"]');
     	function checkFutureDate() {
