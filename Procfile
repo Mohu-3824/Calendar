@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -jar -Dspring.profiles.active=production target/*.jar
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar -Dspring.profiles.active=production target/spring-boot-starter-parent-3.5.5.jar
