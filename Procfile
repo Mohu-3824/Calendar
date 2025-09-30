@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -jar -Dspring.profiles.active=production target/calendar_h-0.0.1-SNAPSHOT.jar
+web: java -Dserver.port=$PORT -jar target/calendar_h-0.0.1-SNAPSHOT.jar
