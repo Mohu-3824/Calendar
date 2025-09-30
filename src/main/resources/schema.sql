@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS tasks;
-DROP TABLE IF EXISTS categories;
 CREATE TABLE IF NOT EXISTS users (
 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(50) NOT NULL,
@@ -54,3 +52,13 @@ CREATE TABLE IF NOT EXISTS tasks (
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
     UNIQUE (user_id, log_date, title)
 );
+
+-- Remember-Meトークンの定期削除イベント
+SET GLOBAL event_scheduler = ON;
+
+CREATE EVENT IF NOT EXISTS delete_old_remember_me_tokens
+ON SCHEDULE EVERY 1 DAY
+STARTS CURRENT_TIMESTAMP
+DO
+  DELETE FROM persistent_logins
+  WHERE last_used < (NOW() - INTERVAL 14 DAY);

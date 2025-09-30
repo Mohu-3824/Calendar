@@ -28,13 +28,16 @@ public class WebSecurityConfig {
     	this.dataSource = dataSource;
         this.userDetailsService = userDetailsService;
     }
+    
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		// URLごとのアクセス制御
 		http
 				.authorizeHttpRequests((requests) -> requests
 						.requestMatchers("/calendar/**", "/tasks/**").authenticated() // ログインが必要なURL
 						.anyRequest().permitAll() // 上記以外のURLはすべてのユーザーにアクセスを許可する
 				)
+				// フォームログイン設定
 				.formLogin((form) -> form
 						.loginPage("/login") // ログインページのURL
 						.loginProcessingUrl("/login") // ログインフォームの送信先URL
@@ -42,28 +45,55 @@ public class WebSecurityConfig {
 						.failureUrl("/login?error") // ログイン失敗時のリダイレクト先URL
 						.permitAll()
 				)
-	            .rememberMe(remember -> remember
-	                    .key("calendar_h_unique_key") // 自分専用の秘密鍵に変更
-	                    .rememberMeParameter("remember-me") // フォームのname属性と一致
-	                    .tokenValiditySeconds(14 * 24 * 60 * 60) // 2週間保持
-	                    .userDetailsService(userDetailsService) // 認証ロジック
-	                    .tokenRepository(persistentTokenRepository()) // DB保存設定
-	            )
-				.logout((logout) -> logout
-						.logoutSuccessUrl("/?loggedOut") // ログアウト時のリダイレクト先URL
-						.permitAll());
+				// Remember-Me設定
+				.rememberMe(remember -> {
+			        remember.key("calendar_h_unique_key");
+			        remember.rememberMeParameter("remember-me");
+			        remember.tokenValiditySeconds(14 * 24 * 60 * 60);
+			        remember.userDetailsService(userDetailsService);
+			        remember.tokenRepository(persistentTokenRepository());
+			    
+				// ▼ Cookie/DB不一致対策（重要）
+	            // tokenRepositoryがnullを返す場合やUserが見つからない場合は
+	            // 認証をクリアして再ログインを要求
+	            remember.useSecureCookie(true); // HTTPS利用時に推奨
+	            remember.alwaysRemember(false); // "remember-me"チェック時のみ
+				})
+
+	        	// セッション切れ時の対応
+				.sessionManagement(session ->
+	                session.invalidSessionUrl("/login?sessionExpired")
+				)
+
+				// ログアウト設定
+				.logout(logout -> logout
+	                .logoutSuccessUrl("/?loggedOut")
+	                .deleteCookies("JSESSIONID", "remember-me")
+	                .permitAll()
+				);
 
 		return http.build();
 	}
 	
+	// Remenber-Me用のトークンをDBで管理
     @Bean
     public PersistentTokenRepository persistentTokenRepository() {
-        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
-        tokenRepository.setDataSource(dataSource);
-        // 初回起動時にテーブル自動作成したい場合は true にする
-        // tokenRepository.setCreateTableOnStartup(true);
-        return tokenRepository;
-    }
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl() {
+        @Override
+        public org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken getTokenForSeries(String seriesId) {
+            try {
+                return super.getTokenForSeries(seriesId);
+            } catch (Exception e) {
+                // ▼ CookieとDBの不一致を検知して安全に無効化
+                System.err.println("Remember-Me token mismatch detected. Clearing token...");
+                return null; // nullを返すと再ログインが求められる
+            }
+        }
+    };
+    tokenRepository.setDataSource(dataSource);
+    return tokenRepository;
+}
+
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
