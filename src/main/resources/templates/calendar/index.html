@@ -44,8 +44,8 @@
                     				<tr th:each="task, iterStat : ${consecutiveRank}">
                         				<td class="rank-num">[[${iterStat.index + 1}]]位</td>
                         				<td>
-                            				<span class="task-title" th:style="'background-color:' + ${task.category.colorCode}">
-                                				<img th:if="${task.category.iconImage != null}"
+                            				<span class="task-title" th:style="'background-color:' + (${task.category != null} ? ${task.category.colorCode} : '#ccc')">
+                                				<img th:if="${task.category != null and task.category.iconImage != null}"
                                      				th:src="@{'/img/categoryImage/' + ${task.category.iconImage}}"
                                      				class="task-icon">
                                 				<span th:text="${task.title}"></span>
@@ -65,8 +65,8 @@
                     				<tr th:each="task, iterStat : ${totalRank}">
                         				<td class="rank-num">[[${iterStat.index + 1}]]位</td>
                         				<td>
-                            				<span class="task-title" th:style="'background-color:' + ${task.category.colorCode}">
-                                				<img th:if="${task.category.iconImage != null}"
+                            				<span class="task-title" th:style="'background-color:' + (${task.category != null} ? ${task.category.colorCode} : '#ccc')">
+                                				<img th:if="${task.category != null and task.category.iconImage != null}"
                                      				th:src="@{'/img/categoryImage/' + ${task.category.iconImage}}"
                                      				class="task-icon">
                                 				<span th:text="${task.title}"></span>
