@@ -10,14 +10,6 @@ CREATE TABLE IF NOT EXISTS users (
 	updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP	
 );
 
-CREATE TABLE IF NOT EXISTS persistent_logins (
-    username VARCHAR(64) NOT NULL,
-    series VARCHAR(64) NOT NULL,
-    token VARCHAR(64) NOT NULL,
-    last_used TIMESTAMP NOT NULL,
-    PRIMARY KEY (series)
-);
-
 CREATE TABLE IF NOT EXISTS verification_tokens (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL UNIQUE,
@@ -52,13 +44,3 @@ CREATE TABLE IF NOT EXISTS tasks (
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
     UNIQUE (user_id, log_date, title)
 );
-
--- Remember-Meトークンの定期削除イベント
-SET GLOBAL event_scheduler = ON;
-
-CREATE EVENT IF NOT EXISTS delete_old_remember_me_tokens
-ON SCHEDULE EVERY 1 DAY
-STARTS CURRENT_TIMESTAMP
-DO
-  DELETE FROM persistent_logins
-  WHERE last_used < (NOW() - INTERVAL 14 DAY);
